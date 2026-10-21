@@ -175,14 +175,91 @@ input[type=range]{accent-color:var(--accent); min-width:0}
   .work{grid-template-columns:208px minmax(0,1fr); grid-template-areas:"tracks stage" "insp insp"}
   .insp{max-height:300px}
 }
+/* Elementos solo para teléfono: ocultos en pantallas amplias */
+.mtop,.mbot,.sh-head,.sh-close,.selbar,.sheet-bg{display:none}
+
 @media (max-width:760px){
-  #app{min-height:0}
-  .work{display:flex; flex-direction:column}
-  .stage{order:1} .tracks{order:2; max-height:320px} .insp{order:3; max-height:none}
-  .roll-wrap{flex:none; height:min(62vh,520px); min-height:340px}
-  .tools .tip{display:none}
+  /* La app ocupa exactamente la pantalla: el piano roll se queda con todo el alto libre */
+  body{padding-block:6px 0; overflow:hidden}
+  #app{min-height:0; height:100%; gap:6px; overflow:hidden; overflow:clip}
+  .work{display:flex; flex-direction:column; flex:1; min-height:0}
+  .stage{flex:1; min-height:0}
+  .roll-wrap{flex:1; min-height:0; height:auto; border-radius:8px 8px 0 0}
+  .kbd{height:120px}
+
+  /* Barra superior */
+  .mtop{display:flex; flex-direction:column; gap:6px; flex:none}
+  .mrow{display:flex; align-items:center; gap:6px; min-width:0}
+  .mrow .ib{width:38px; height:38px; padding:0; flex:none}
+  .mtitle{flex:1; min-width:0; height:38px; text-align:left; background:none; border:0; padding:0 4px; font:italic 500 18px/1.1 var(--display); color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .mtrack{flex:1; min-width:0; height:38px; display:flex; align-items:center; gap:8px; padding:0 10px; border-radius:8px; border:1px solid var(--line); background:var(--panel); color:var(--ink); font-weight:500; text-align:left}
+  .mtrack .dot{flex:none; width:10px; height:10px; border-radius:3px; background:var(--accent)}
+  .mtrack .nm{flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .mtrack .car{flex:none; color:var(--ink3); font-size:11px}
+  .mpos{flex:none; font-size:11.5px; color:var(--ink2); padding:0 2px; white-space:nowrap}
+
+  /* Barra inferior, en la zona del pulgar */
+  .mbot{display:flex; flex:none; gap:2px; padding:4px; margin-bottom:6px; border:1px solid var(--line); border-radius:12px; background:var(--panel)}
+  .mbot button{flex:1; min-width:0; display:flex; flex-direction:column; align-items:center; gap:3px; padding:6px 0 4px; border:0; border-radius:8px; background:none; color:var(--ink2); font-size:10.5px; font-weight:500}
+  .mbot button span{display:flex}
+  .mbot svg{width:21px; height:21px; fill:currentColor}
+  .mbot button[aria-pressed="true"]{color:var(--accent); background:var(--accent-soft)}
+
+  /* Barra de selección, encima del piano roll */
+  .selbar:not([hidden]){display:flex; align-items:center; gap:4px; padding:6px; overflow-x:auto; border-top:1px solid var(--line); background:var(--panel); scrollbar-width:none}
+  .selbar .ib{flex:none; height:34px}
+  .selcount{flex:none; font-size:11.5px; color:var(--ink2); padding:0 4px; white-space:nowrap}
+
+  /* Hojas inferiores: Obra, Pistas, Edición y Ajustes */
+  .top,.tracks,.tools,.insp{
+    position:fixed; left:0; right:0; bottom:0; top:auto; z-index:40; margin:0;
+    max-height:78vh; max-height:78dvh; overflow-y:auto; overscroll-behavior:contain;
+    border:1px solid var(--line); border-bottom:0; border-radius:14px 14px 0 0; background:var(--panel);
+    box-shadow:0 -10px 30px rgba(10,12,20,.18);
+    padding:0 max(14px, env(safe-area-inset-right, 0px)) calc(14px + env(safe-area-inset-bottom, 0px)) max(14px, env(safe-area-inset-left, 0px));
+    transform:translateY(102%); visibility:hidden; transition:transform .24s ease, visibility 0s linear .24s;
+  }
+  body[data-sheet="top"] .top, body[data-sheet="tracks"] .tracks, body[data-sheet="tools"] .tools, body[data-sheet="insp"] .insp{transform:none; visibility:visible; transition:transform .24s ease}
+  .sheet-bg{position:fixed; inset:0; z-index:39; background:rgba(8,10,16,.4)}
+  body[data-sheet] .sheet-bg{display:block}
+  .sh-head{display:flex; align-items:center; justify-content:space-between; gap:8px; position:sticky; top:0; z-index:3; background:var(--panel); padding:12px 0 10px; width:100%}
+  .sh-head h2,.tracks .pane-head h2{font-size:12px}
+  .sh-close{display:inline-block}
+
+  /* Contenido de cada hoja */
+  .top{display:flex; flex-direction:column; align-items:stretch; gap:14px}
+  .top .brand{flex:none}
+  .top .wordmark{display:none}
+  #title{font-size:16px; border-bottom-color:var(--line); padding:6px 0}
+  #btnStart,#btnStop,#btnPlay,#btnRec,#pos{display:none}
+  .top .transport,.top .fields,.top .actions{gap:8px}
+  .top .fields{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+  .top .fields label{flex-direction:column; align-items:stretch; gap:4px}
+  .top .fields label[for="keyRoot"]{grid-column:1 / -1}
+  .top .fields select,.top .fields input{width:100%}
+  #bpm{width:100%}
+  .top .actions #btnUndo,.top .actions #btnRedo,.top .actions .sep{display:none}
   .status{margin-left:0}
+
+  .tracks{display:flex; flex-direction:column; padding-top:0}
+  .tracks .pane-head{position:sticky; top:0; z-index:3; background:var(--panel); padding:12px 0 10px; border-bottom:1px solid var(--line)}
+  #trackList{flex:1; min-height:0; overflow-y:auto; margin-inline:calc(-1 * max(14px, env(safe-area-inset-left, 0px)))}
+  .trk{padding-block:9px; grid-template-columns:6px minmax(0,1fr) auto}
+  .trk .mini{width:34px; height:30px}
+  .master{padding-inline:0}
+
+  .tools{display:flex; flex-direction:column; align-items:stretch; gap:14px}
+  .tools .grp{flex-wrap:wrap; gap:6px}
+  .tools .grp::before{content:attr(aria-label); width:100%; font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink3)}
+  .tools .grp[aria-label="Herramienta"],.tools .sep,.tools .tip{display:none}
+  .tools .ib{height:38px}
+
+  .insp{display:flex; flex-direction:column; height:78vh; height:78dvh}
+  .insp .tabpane{padding-inline:0 6px}
+  .tabs{flex:none}
+  .tabs button{padding:11px 4px}
 }
+@media (max-width:760px) and (prefers-reduced-motion:reduce){ .top,.tracks,.tools,.insp{transition:none} }
 @media (prefers-reduced-motion:reduce){ #toast,.meter i{transition:none} }
 
 /* Ajustes para iPhone */
@@ -192,13 +269,31 @@ body{-webkit-text-size-adjust:100%; touch-action:manipulation}
 </head>
 <body>
 <div id="app">
+  <div class="mtop" aria-label="Barra principal">
+    <div class="mrow">
+      <button id="mMenu" class="ib" data-ic="menu" aria-label="Obra: archivo, tempo, tonalidad y cuadrícula"></button>
+      <button id="mTitle" class="mtitle" aria-label="Abrir ajustes de la obra"></button>
+      <button id="mUndo" class="ib" data-ic="undo" aria-label="Deshacer"></button>
+      <button id="mRedo" class="ib" data-ic="redo" aria-label="Rehacer"></button>
+    </div>
+    <div class="mrow">
+      <button id="mTrack" class="mtrack" aria-label="Cambiar de pista"><i class="dot"></i><span class="nm"></span><span class="car" aria-hidden="true">▾</span></button>
+      <span id="mPos" class="mpos mono" aria-live="off">1·1 0:00</span>
+      <button id="mStart" class="ib" data-ic="start" aria-label="Volver al inicio"></button>
+      <button id="mPlay" class="ib primary" data-ic="play" aria-label="Reproducir"></button>
+      <button id="mRec" class="ib rec" data-ic="rec" aria-label="Grabar" aria-pressed="false"></button>
+    </div>
+  </div>
+
   <header class="top">
+    <div class="sh-head"><h2>Obra</h2><button class="btn sh-close">Listo</button></div>
     <div class="brand">
       <span class="wordmark">Boceto Orquestal</span>
       <input id="title" type="text" aria-label="Título de la obra" maxlength="80">
     </div>
     <div class="transport" role="group" aria-label="Transporte">
-      <button id="btnStop" class="ib" data-ic="stop" title="Detener (Inicio)" aria-label="Detener"></button>
+      <button id="btnStart" class="ib" data-ic="start" title="Volver al inicio (Inicio)" aria-label="Volver al inicio"></button>
+      <button id="btnStop" class="ib" data-ic="stop" title="Detener y volver al inicio" aria-label="Detener"></button>
       <button id="btnPlay" class="ib primary" data-ic="play" title="Reproducir o pausar (Espacio)" aria-label="Reproducir"></button>
       <button id="btnRec" class="ib rec" data-ic="rec" title="Grabar en vivo con el teclado (R)" aria-label="Grabar" aria-pressed="false"></button>
       <button id="btnLoop" class="ib txt" title="Repetir la región o toda la obra" aria-pressed="false"><span data-ic="loop"></span>Bucle</button>
@@ -229,6 +324,7 @@ body{-webkit-text-size-adjust:100%; touch-action:manipulation}
       <div class="pane-head">
         <h2>Pistas</h2>
         <button id="btnAddTrack" class="btn">+ Pista</button>
+        <button class="btn sh-close">Listo</button>
       </div>
       <div id="trackList"></div>
       <div class="master" id="masterStrip">
@@ -241,6 +337,7 @@ body{-webkit-text-size-adjust:100%; touch-action:manipulation}
 
     <section class="stage" aria-label="Piano roll">
       <div class="tools" role="toolbar" aria-label="Herramientas de edición">
+        <div class="sh-head"><h2>Herramientas</h2><button class="btn sh-close">Listo</button></div>
         <div class="grp" role="group" aria-label="Herramienta">
           <button class="ib" data-tool="pencil" data-ic="pencil" title="Lápiz: dibuja, mueve y alarga notas (1)" aria-label="Lápiz"></button>
           <button class="ib" data-tool="select" data-ic="select" title="Selección: arrastra para seleccionar (2)" aria-label="Selección"></button>
@@ -275,6 +372,7 @@ body{-webkit-text-size-adjust:100%; touch-action:manipulation}
           <button id="btnZoomOut" class="ib" data-ic="zout" title="Alejar (Ctrl + rueda)" aria-label="Alejar"></button>
           <button id="btnZoomIn" class="ib" data-ic="zin" title="Acercar (Ctrl + rueda)" aria-label="Acercar"></button>
           <button id="btnKbd" class="ib txt" aria-pressed="false" title="Teclado en pantalla">Teclado</button>
+          <button id="btnVel" class="ib txt" aria-pressed="true" title="Mostrar la línea de velocidad y reguladores">Velocidad</button>
         </div>
         <span id="regionInfo" class="rng-hint" hidden></span>
         <button id="btnRegionClear" class="btn" hidden>Quitar región</button>
@@ -282,10 +380,21 @@ body{-webkit-text-size-adjust:100%; touch-action:manipulation}
       <div id="rollWrap" class="roll-wrap">
         <div id="scroller" class="scroller"><div id="sizer" class="sizer"><canvas id="roll" aria-label="Piano roll: cuadrícula de notas"></canvas></div></div>
       </div>
+      <div id="selBar" class="selbar" role="toolbar" aria-label="Notas seleccionadas" hidden>
+        <span id="selCount" class="selcount"></span>
+        <button class="ib txt" data-sel="oct-">-8va</button>
+        <button class="ib txt" data-sel="dn">-1</button>
+        <button class="ib txt" data-sel="up">+1</button>
+        <button class="ib txt" data-sel="oct+">+8va</button>
+        <button class="ib txt" data-sel="dup">Duplicar</button>
+        <button class="ib txt" data-sel="del">Borrar</button>
+        <button class="ib" data-sel="clear" data-ic="close" aria-label="Quitar selección"></button>
+      </div>
       <div id="kbd" class="kbd" hidden></div>
     </section>
 
     <aside class="insp" aria-label="Inspector">
+      <div class="sh-head"><h2>Ajustes</h2><button class="btn sh-close">Listo</button></div>
       <div class="tabs" role="tablist">
         <button role="tab" id="tbTrack" data-tab="Track" aria-selected="true">Pista</button>
         <button role="tab" id="tbHarm" data-tab="Harm" aria-selected="false">Armonía</button>
@@ -361,6 +470,15 @@ body{-webkit-text-size-adjust:100%; touch-action:manipulation}
     </aside>
   </main>
 
+  <nav class="mbot" aria-label="Herramientas">
+    <button data-tool="pencil" aria-label="Lápiz"><span data-ic="pencil"></span>Lápiz</button>
+    <button data-tool="select" aria-label="Selección"><span data-ic="select"></span>Selección</button>
+    <button data-tool="erase" aria-label="Borrador"><span data-ic="erase"></span>Borrar</button>
+    <button id="mEdit" aria-label="Edición"><span data-ic="edit"></span>Edición</button>
+    <button id="mSet" aria-label="Ajustes"><span data-ic="gear"></span>Ajustes</button>
+  </nav>
+  <div id="sheetBg" class="sheet-bg"></div>
+
   <div id="dlgNew" class="dlg" hidden>
     <div class="card" role="dialog" aria-labelledby="dlgNewT">
       <h3 id="dlgNewT">Nueva obra</h3>
@@ -429,7 +547,9 @@ let activeId = null;              // pista activa
 let sel = new Set();              // ids de notas seleccionadas
 let range = null;                 // región de compases {a,b} en ticks
 let curTick = 0;                  // cursor / posición de reproducción detenida
-const V = { tool:'pencil', snap:'8', ghost:true, view:'roll', ppt:0.8, rowH:16, kbd:false, lastDur:48 };
+const MQ_PHONE = window.matchMedia('(max-width: 760px)'), MQ_COARSE = window.matchMedia('(pointer: coarse)');
+const isPhone = () => MQ_PHONE.matches, isCoarse = () => MQ_COARSE.matches;
+const V = { tool:'pencil', snap:'8', ghost:true, view:'roll', ppt:isPhone() ? 0.42 : 0.8, rowH:isCoarse() ? 22 : 16, kbd:false, lastDur:48, vel:!isPhone() };
 let clip = null;                  // portapapeles {notes:[{k,t,d,p,v}], span}
 let chordCache = null, chordDirty = true;
 
@@ -549,7 +669,7 @@ function checkpoint(){ hist.undo.push(JSON.stringify(S)); if(hist.undo.length > 
 function restore(json){ S = JSON.parse(json); if(!byId(activeId)) activeId = S.tracks[0].id; afterLoad(); }
 function undo(){ if(!hist.undo.length) return; hist.redo.push(JSON.stringify(S)); restore(hist.undo.pop()); updateUndoUI(); }
 function redo(){ if(!hist.redo.length) return; hist.undo.push(JSON.stringify(S)); restore(hist.redo.pop()); updateUndoUI(); }
-function updateUndoUI(){ $('btnUndo').disabled = !hist.undo.length; $('btnRedo').disabled = !hist.redo.length; }
+function updateUndoUI(){ ['btnUndo','mUndo'].forEach(id => { if($(id)) $(id).disabled = !hist.undo.length; }); ['btnRedo','mRedo'].forEach(id => { if($(id)) $(id).disabled = !hist.redo.length; }); }
 function setStatus(s){ $('status').textContent = s; }
 function toast(msg){ const el = $('toast'); el.textContent = msg; el.classList.add('show'); clearTimeout(toast.t); toast.t = setTimeout(() => el.classList.remove('show'), 2600); }
 function touch(opts){
@@ -559,6 +679,7 @@ function touch(opts){
   requestDraw();
   setStatus('Guardando…'); clearTimeout(saveT);
   saveT = setTimeout(() => { try{ localStorage.setItem(KEY, JSON.stringify(S)); setStatus('Guardado en este navegador'); }catch(e){ setStatus('Sin guardado automático'); } }, 700);
+  refreshSelBar();
   if(opts.tracks) refreshTracks();
   if(opts.panels) refreshPanels();
   else scheduleHarmRefresh();
@@ -939,10 +1060,19 @@ function pauseTransport(){
 }
 function stopTransportNow(){ T.playing = false; clearInterval(T.timer); resetVoices(); updateTransportUI(); }
 function togglePlay(){ if(T.playing) pauseTransport(); else startTransport(); }
+/* Inicio de la obra, o de la región cuando el bucle está activo. */
+const homeTick = () => (T.loop && range) ? range.a : 0;
 function stopAll(){
-  const was = T.playing;
-  if(was){ stopTransportNow(); finishRecording(); curTick = T.startTick; } else curTick = 0;
-  updateTransportUI(); requestDraw();
+  if(T.playing){ stopTransportNow(); finishRecording(); }
+  curTick = homeTick(); scroller.scrollLeft = Math.max(0, curTick * V.ppt - 40);
+  updateTransportUI(); requestDraw(); refreshHarmNow();
+}
+/* Volver al inicio: si está sonando, vuelve a empezar desde ahí sin detenerse. */
+function goStart(){
+  const t0 = homeTick();
+  if(T.playing){ stopTransportNow(); finishRecording(); curTick = t0; startTransport(); }
+  else { curTick = t0; updateTransportUI(); }
+  scroller.scrollLeft = Math.max(0, t0 * V.ppt - 40); requestDraw(); refreshHarmNow();
 }
 
 /* ===== Grabación en vivo ===== */
@@ -1195,7 +1325,7 @@ function importFile(file){
 }
 /* ===== Piano roll: geometría y dibujo en canvas ===== */
 const cv = $('roll'), g2 = cv.getContext('2d'), scroller = $('scroller'), sizer = $('sizer');
-const KEYW = 60, RULER_H = 22, MARK_H = 16, CHORD_H = 17, HDR = RULER_H + MARK_H + CHORD_H, VEL_H = 88, LANE_H = 46, PITCH_N = PITCH_HI - PITCH_LO + 1;
+let KEYW = 60; const RULER_H = 22, MARK_H = 16, CHORD_H = 17, HDR = RULER_H + MARK_H + CHORD_H, VEL_H = 88, LANE_H = 46, PITCH_N = PITCH_HI - PITCH_LO + 1;
 const DRUMS = { 36:'Bombo', 38:'Caja', 42:'Charles', 47:'Tom', 49:'Platillo', 54:'Pandereta', 81:'Triángulo' };
 let PAL = {};
 let vw = 0, vh = 0, sx = 0, sy = 0;
@@ -1208,7 +1338,8 @@ function readPalette(){
   for(const k in SECTIONS) PAL.sec[k] = v(SECTIONS[k].v);
 }
 const trkColor = t => PAL.sec[instOf(t).sec];
-const noteH = () => Math.max(60, vh - HDR - (V.view === 'roll' ? VEL_H : 0));
+const velH = () => (V.view === 'roll' && V.vel) ? VEL_H : 0;
+const noteH = () => Math.max(60, vh - HDR - velH());
 const tickX = t => KEYW + t * V.ppt - sx;
 const xTick = x => (x - KEYW + sx) / V.ppt;
 const pitchY = p => HDR + (PITCH_HI - p) * V.rowH - sy;
@@ -1216,10 +1347,11 @@ const yPitch = y => PITCH_HI - Math.floor((y - HDR + sy) / V.rowH);
 
 function requestDraw(){ if(redrawReq) return; redrawReq = true; requestAnimationFrame(() => { redrawReq = false; draw(); }); }
 function layout(){
+  KEYW = isPhone() ? 44 : 60;
   const w = scroller.clientWidth, h = scroller.clientHeight; if(!w || !h) return;
   const dpr = window.devicePixelRatio || 1;
   if(w !== vw || h !== vh || cv.width !== Math.round(w * dpr)){ vw = w; vh = h; cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); cv.style.width = w + 'px'; cv.style.height = h + 'px'; }
-  const cw = KEYW + (endTick() + 16 * PPQ) * V.ppt, ch = V.view === 'roll' ? PITCH_N * V.rowH + HDR + VEL_H : HDR + S.tracks.length * LANE_H + 14;
+  const cw = KEYW + (endTick() + 16 * PPQ) * V.ppt, ch = V.view === 'roll' ? PITCH_N * V.rowH + HDR + velH() : HDR + S.tracks.length * LANE_H + 14;
   sizer.style.width = Math.max(w, cw) + 'px'; sizer.style.height = Math.max(h, ch) + 'px';
   requestDraw();
 }
@@ -1289,7 +1421,7 @@ function drawRoll(){
   if(drag && drag.mode === 'box'){ g2.fillStyle = PAL.soft; g2.strokeStyle = PAL.accent; g2.lineWidth = 1; const b = drag.box; g2.fillRect(b.x, b.y, b.w, b.h); g2.strokeRect(b.x + 0.5, b.y + 0.5, b.w, b.h); }
   g2.restore();
   drawKeys(act, ins, nh, r0, r1);
-  drawVelocity(act, col, bot);
+  if(V.vel) drawVelocity(act, col, bot);
 }
 function drawKeys(act, ins, nh, r0, r1){
   g2.save(); g2.beginPath(); g2.rect(0, HDR, KEYW, nh); g2.clip();
@@ -1300,7 +1432,7 @@ function drawKeys(act, ins, nh, r0, r1){
     if(IS_BLACK[pc]){ g2.fillStyle = PAL.keyB; g2.fillRect(0, y + 1, KEYW * 0.62, V.rowH - 2); }
     if(outR){ g2.fillStyle = 'rgba(128,130,140,.38)'; g2.fillRect(0, y, KEYW, V.rowH); }
     g2.strokeStyle = PAL.line; g2.lineWidth = 1; g2.beginPath(); g2.moveTo(0, Math.round(y + V.rowH) + 0.5); g2.lineTo(KEYW, Math.round(y + V.rowH) + 0.5); g2.stroke();
-    if(kit && DRUMS[p]) txt(DRUMS[p], KEYW - 4, y + V.rowH / 2 + 0.5, '#222', MONO, 'right');
+    if(kit && DRUMS[p]) txt(KEYW < 50 ? DRUMS[p].slice(0, 5) : DRUMS[p], KEYW - 4, y + V.rowH / 2 + 0.5, '#222', MONO, 'right');
     else if(pc === 0) txt(pitchName(p), KEYW - 4, y + V.rowH / 2 + 0.5, '#444', MONO, 'right');
   }
   g2.restore();
@@ -1366,7 +1498,8 @@ function drawHeader(){
   }
   g2.restore();
   g2.fillStyle = PAL.panel; g2.fillRect(0, 0, KEYW, HDR); g2.strokeStyle = PAL.line; g2.beginPath(); g2.moveTo(KEYW + 0.5, 0); g2.lineTo(KEYW + 0.5, HDR); g2.stroke();
-  txt('Compás', 8, RULER_H / 2 + 1, PAL.ink3, '10px "IBM Plex Sans", sans-serif'); txt('Secciones', 8, RULER_H + MARK_H / 2, PAL.ink3, '10px "IBM Plex Sans", sans-serif'); txt('Acordes', 8, RULER_H + MARK_H + CHORD_H / 2, PAL.ink3, '10px "IBM Plex Sans", sans-serif');
+  const nar = KEYW < 50, lf = '10px "IBM Plex Sans", sans-serif';
+  txt(nar ? 'Comp.' : 'Compás', 6, RULER_H / 2 + 1, PAL.ink3, lf); txt(nar ? 'Secc.' : 'Secciones', 6, RULER_H + MARK_H / 2, PAL.ink3, lf); txt(nar ? 'Acord.' : 'Acordes', 6, RULER_H + MARK_H + CHORD_H / 2, PAL.ink3, lf);
 }
 /* ===== Piano roll: interacción con puntero, rueda y zoom ===== */
 let drag = null;
@@ -1394,8 +1527,35 @@ function ensureTrackVisible(){ const y = scroller.scrollTop; if(V.view === 'orq'
   if(act.notes.length){ const ps = act.notes.map(n => n.p).sort((a,b) => a - b); mid = ps[ps.length >> 1]; }
   scroller.scrollTop = Math.max(0, (PITCH_HI - mid) * V.rowH - noteH() / 2); }
 
+/* Gestos: dos dedos desplazan y pellizcan; un dedo edita. */
+const ptrs = new Map(); let pinch = null, lastTap = null;
+function cancelDragForGesture(){
+  const d = drag; drag = null; if(!d) return;
+  if(d.mode === 'key' && d.rel) d.rel();
+  if(d.lp) clearTimeout(d.lp);
+  if(d.mode === 'box') sel = new Set(d.base);
+  if(d.cp && hist.undo.length){ S = JSON.parse(hist.undo.pop()); afterLoad(); updateUndoUI(); }
+  requestDraw();
+}
+function startPinch(){
+  const [a, b] = [...ptrs.values()];
+  pinch = { d0:Math.max(20, Math.hypot(a.x - b.x, a.y - b.y)), mx0:(a.x + b.x) / 2, my0:(a.y + b.y) / 2, ppt0:V.ppt, sl0:scroller.scrollLeft, st0:scroller.scrollTop };
+}
+function movePinch(){
+  const [a, b] = [...ptrs.values()], d = Math.hypot(a.x - b.x, a.y - b.y), mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2, p = pinch;
+  const ppt = clamp(p.ppt0 * d / p.d0, 0.08, 4), tAnchor = (p.mx0 - KEYW + p.sl0) / p.ppt0;
+  if(Math.abs(ppt - V.ppt) > 1e-4){ V.ppt = ppt; layout(); }
+  scroller.scrollLeft = Math.max(0, KEYW + tAnchor * ppt - mx);
+  scroller.scrollTop = Math.max(0, p.st0 - (my - p.my0));
+  requestDraw();
+}
 cv.addEventListener('pointerdown', e => {
   if(e.button === 2) return;
+  if(e.pointerType === 'touch'){
+    const q = localXY(e); ptrs.set(e.pointerId, q);
+    if(ptrs.size === 2){ cancelDragForGesture(); startPinch(); try{ cv.setPointerCapture(e.pointerId); }catch(_){} return; }
+    if(ptrs.size > 2 || pinch) return;
+  }
   const { x, y } = localXY(e), nh = noteH(); sx = scroller.scrollLeft; sy = scroller.scrollTop;
   ensureAudioSoft();
   if(y < HDR){
@@ -1420,12 +1580,26 @@ cv.addEventListener('pointerdown', e => {
   const hit = noteAt(x, y), act = activeTrack();
   if(V.tool === 'erase'){ drag = { mode:'erase', cp:false }; cv.setPointerCapture(e.pointerId); if(hit) eraseNote(hit.n); return; }
   if(hit){
+    const now = performance.now();
+    if(lastTap && lastTap.id === hit.n.id && now - lastTap.t < 330){
+      lastTap = null; checkpoint(); act.notes = act.notes.filter(n => n !== hit.n); sel.delete(hit.n.id); touch(); toast('Nota borrada'); return;
+    }
+    lastTap = { id:hit.n.id, t:now };
+    const baseSel = new Set(sel), wasSel = sel.has(hit.n.id);
     if(e.shiftKey){ if(sel.has(hit.n.id)) sel.delete(hit.n.id); else sel.add(hit.n.id); requestDraw(); }
     else if(!sel.has(hit.n.id)){ sel.clear(); sel.add(hit.n.id); }
     if(!sel.has(hit.n.id)) return;
     const orig = new Map(); selNotes().forEach(o => orig.set(o.n.id, { t:o.n.t, d:o.n.d, p:o.n.p }));
-    drag = { mode:hit.edge ? 'resize' : 'move', prim:hit.n, orig, t0:xTick(x), p0:yPitch(y), cp:false, lastP:hit.n.p };
-    if(!hit.edge) auditionNote(act, hit.n.p, hit.n.v);
+    const d = drag = { mode:hit.edge ? 'resize' : 'move', prim:hit.n, orig, t0:xTick(x), p0:yPitch(y), cp:false, lastP:hit.n.p };
+    if(!hit.edge){
+      auditionNote(act, hit.n.p, hit.n.v);
+      d.lp = setTimeout(() => {
+        if(drag !== d || d.cp) return;
+        d.long = true; lastTap = null;
+        const s2 = new Set(baseSel); if(wasSel) s2.delete(hit.n.id); else s2.add(hit.n.id); sel = s2;
+        toast(sel.size + (sel.size === 1 ? ' nota seleccionada' : ' notas seleccionadas')); requestDraw(); refreshSelBar();
+      }, 450);
+    }
     cv.setPointerCapture(e.pointerId); requestDraw(); return;
   }
   if(V.tool === 'pencil'){
@@ -1445,6 +1619,7 @@ cv.addEventListener('pointerdown', e => {
 
 cv.addEventListener('pointermove', e => {
   const { x, y } = localXY(e);
+  if(e.pointerType === 'touch' && ptrs.has(e.pointerId)){ ptrs.set(e.pointerId, { x, y }); if(pinch){ if(ptrs.size >= 2) movePinch(); return; } }
   if(!drag){
     if(V.view === 'roll' && V.tool === 'pencil' && x >= KEYW && y >= HDR && y < HDR + noteH()){ const h = noteAt(x, y); cv.style.cursor = h ? (h.edge ? 'ew-resize' : 'grab') : 'crosshair'; }
     else cv.style.cursor = V.tool === 'hand' ? 'grab' : 'default';
@@ -1462,6 +1637,7 @@ cv.addEventListener('pointermove', e => {
     requestDraw(); return;
   }
   if(d.mode === 'move' || d.mode === 'resize'){
+    if(d.long) return;
     const prim = d.orig.get(d.prim.id), tnow = xTick(x), act = activeTrack();
     let dt, dp = 0;
     if(d.mode === 'move'){
@@ -1472,7 +1648,7 @@ cv.addEventListener('pointermove', e => {
       dt = (d.fresh ? snapTo(tnow) - (prim.t + prim.d) : snapTo(prim.t + prim.d + (tnow - d.t0)) - (prim.t + prim.d));
       for(const o of d.orig.values()) dt = Math.max(dt, g - o.d);
     }
-    if(!d.cp && (dt || dp)){ checkpoint(); d.cp = true; }
+    if(!d.cp && (dt || dp)){ checkpoint(); d.cp = true; if(d.lp) clearTimeout(d.lp); lastTap = null; }
     if(!d.cp && !d.fresh) return;
     for(const t of S.tracks) for(const n of t.notes){ const o = d.orig.get(n.id); if(!o) continue;
       if(d.mode === 'move'){ n.t = o.t + dt; n.p = o.p + dp; } else n.d = Math.max(1, o.d + dt); }
@@ -1483,12 +1659,14 @@ cv.addEventListener('pointermove', e => {
   }
 });
 function endDrag(e){
+  if(e && e.pointerType === 'touch'){ ptrs.delete(e.pointerId); if(pinch){ if(ptrs.size < 2) pinch = null; return; } }
   const d = drag; drag = null; if(!d) return;
+  if(d.lp) clearTimeout(d.lp);
   if(d.mode === 'key' && d.rel) d.rel();
   if(d.mode === 'ruler' && !d.moved){ seekTo(Math.max(0, snapTo(d.t0))); }
   if(d.mode === 'move' || d.mode === 'resize' || d.mode === 'erase' || d.mode === 'vel') { if(d.cp) touch({ panels:false }); layoutSoon(); }
   if(d.mode === 'box') requestDraw();
-  refreshHarmNow();
+  refreshHarmNow(); refreshSelBar();
 }
 cv.addEventListener('pointerup', endDrag); cv.addEventListener('pointercancel', endDrag);
 cv.addEventListener('contextmenu', e => {
@@ -1533,6 +1711,11 @@ const ICONS = {
   erase:'<svg viewBox="0 0 24 24"><path d="M16.2 3.6a2 2 0 012.8 0l1.4 1.4a2 2 0 010 2.8L11 17.2H6.4L3.6 14.4a2 2 0 010-2.8zM10 20h11v2H8z"/></svg>',
   hand:'<svg viewBox="0 0 24 24"><path d="M9 11V5a1.5 1.5 0 013 0v5h1V4a1.5 1.5 0 013 0v7h1V6a1.5 1.5 0 013 0v9c0 4-2.5 7-7 7h-1c-3 0-4.5-1.5-6-4l-2-3.5a1.5 1.5 0 012.6-1.5L9 15z"/></svg>',
   zin:'<svg viewBox="0 0 24 24"><path fill-rule="evenodd" d="M10 4a6 6 0 014.7 9.7l5 5-1.4 1.4-5-5A6 6 0 1110 4zm0 2a4 4 0 100 8 4 4 0 000-8zM9 7.5h2v1.5h1.5v2H11v1.5H9V11H7.5V9H9z"/></svg>',
+  menu:'<svg viewBox="0 0 24 24"><path d="M3 6h18v2H3zM3 11h18v2H3zM3 16h18v2H3z"/></svg>',
+  start:'<svg viewBox="0 0 24 24"><path d="M5 5h2.5v14H5zM19 5v14L8.5 12z"/></svg>',
+  edit:'<svg viewBox="0 0 24 24"><path d="M3 5h12v2H3zM3 11h8v2H3zM3 17h6v2H3zM20.7 9.3l-1.4-1.4a1 1 0 00-1.4 0L11 14.8V18h3.2l6.5-6.5a1 1 0 000-1.4z"/></svg>',
+  gear:'<svg viewBox="0 0 24 24"><path fill-rule="evenodd" d="M10.3 2h3.4l.5 2.6c.6.2 1.2.5 1.7.9l2.5-.9 1.7 2.9-2 1.8c.1.6.1 1.2 0 1.8l2 1.8-1.7 2.9-2.5-.9c-.5.4-1.1.7-1.7.9l-.5 2.6h-3.4l-.5-2.6a7 7 0 01-1.7-.9l-2.5.9-1.7-2.9 2-1.8a6 6 0 010-1.8l-2-1.8 1.7-2.9 2.5.9c.5-.4 1.1-.7 1.7-.9zM12 8.5a3.5 3.5 0 100 7 3.5 3.5 0 000-7z" transform="translate(0 1)"/></svg>',
+  close:'<svg viewBox="0 0 24 24"><path d="M6.4 5L12 10.6 17.6 5 19 6.4 13.4 12l5.6 5.6-1.4 1.4-5.6-5.6L6.4 19 5 17.6 10.6 12 5 6.4z"/></svg>',
   zout:'<svg viewBox="0 0 24 24"><path fill-rule="evenodd" d="M10 4a6 6 0 014.7 9.7l5 5-1.4 1.4-5-5A6 6 0 1110 4zm0 2a4 4 0 100 8 4 4 0 000-8zM7.5 9h5v2h-5z"/></svg>'
 };
 function h(tag, props, ...kids){
@@ -1567,10 +1750,12 @@ function syncControls(){
   $('mVol').value = S.master.vol; $('mRev').value = S.master.rev; $('mRoom').value = String(S.master.room);
   $('mVolO').textContent = Math.round(S.master.vol * 100) + '%'; $('mRevO').textContent = Math.round(S.master.rev * 100) + '%';
   $('barsIn').value = S.bars;
+  $('mTitle').textContent = S.title || 'Sin título';
 }
 function updateTransportUI(){
   $('btnPlay').innerHTML = T.playing ? ICONS.pause : ICONS.play; $('btnPlay').setAttribute('aria-label', T.playing ? 'Pausar' : 'Reproducir');
-  $('btnRec').setAttribute('aria-pressed', T.rec); $('btnLoop').setAttribute('aria-pressed', T.loop); $('btnMet').setAttribute('aria-pressed', T.metro); $('btnCount').setAttribute('aria-pressed', T.count);
+  $('btnRec').setAttribute('aria-pressed', T.rec);
+  $('mPlay').innerHTML = T.playing ? ICONS.pause : ICONS.play; $('mPlay').setAttribute('aria-label', T.playing ? 'Pausar' : 'Reproducir'); $('mRec').setAttribute('aria-pressed', T.rec); $('btnLoop').setAttribute('aria-pressed', T.loop); $('btnMet').setAttribute('aria-pressed', T.metro); $('btnCount').setAttribute('aria-pressed', T.count);
 }
 function updateRegionUI(){
   const on = !!range; $('regionInfo').hidden = !on; $('btnRegionClear').hidden = !on;
@@ -1583,7 +1768,8 @@ function refreshTracks(){
   S.tracks.forEach(t => {
     const ins = instOf(t);
     if(ins.sec !== lastSec){ lastSec = ins.sec; list.append(h('div', { class:'sec-label' }, SECTIONS[ins.sec].n)); }
-    const row = h('div', { class:'trk' + (t.id === activeId ? ' sel' : '') + (t.mute ? ' muted' : ''), 'data-id':t.id, role:'button', tabindex:'0', onclick:() => selectTrack(t.id), onkeydown:e => { if(e.key === 'Enter') selectTrack(t.id); } },
+    const pick = () => { selectTrack(t.id); if(isPhone()) closeSheet(); };
+    const row = h('div', { class:'trk' + (t.id === activeId ? ' sel' : '') + (t.mute ? ' muted' : ''), 'data-id':t.id, role:'button', tabindex:'0', onclick:pick, onkeydown:e => { if(e.key === 'Enter') pick(); } },
       h('span', { class:'bar', style:'background:var(' + SECTIONS[ins.sec].v + ')' }),
       h('div', { style:'min-width:0' }, h('div', { class:'nm' }, t.name), h('div', { class:'sub' }, ins.name + ' · ' + t.notes.length + (t.notes.length === 1 ? ' nota' : ' notas'))),
       h('div', { class:'btns' },
@@ -1594,12 +1780,14 @@ function refreshTracks(){
     list.append(row);
   });
   list.scrollTop = keep;
+  const a = activeTrack();
+  if(a){ const ins = instOf(a), chip = $('mTrack'); chip.querySelector('.nm').textContent = a.name; chip.querySelector('.dot').style.background = 'var(' + SECTIONS[ins.sec].v + ')'; chip.setAttribute('aria-label', 'Pista activa: ' + a.name + '. Cambiar de pista'); }
 }
 function selectTrack(id){
   if(!byId(id)) return; const changed = id !== activeId; activeId = id; if(changed) sel.clear();
   const t = byId(id), ins = instOf(t); kbBase = ins.id === 'kit' ? 36 : clamp(Math.floor((ins.lo + ins.hi) / 2 / 12) * 12, 24, 84);
-  refreshTracks(); syncInspector(); if(changed) ensureTrackVisible(); buildKeys(); requestDraw();
-  const el = $('trackList').querySelector('.trk.sel'); if(el) el.scrollIntoView({ block:'nearest' });
+  refreshTracks(); syncInspector(); if(changed) ensureTrackVisible(); buildKeys(); requestDraw(); refreshSelBar();
+  revealActiveTrack(false);
 }
 
 /* ===== Inspector: pista ===== */
@@ -1662,6 +1850,14 @@ function refreshPieceLists(){
     del(() => mutate(() => S.markers.splice(i, 1), { panels:true })))));
 }
 function refreshPanels(){ syncControls(); refreshTracks(); syncInspector(); refreshPieceLists(); refreshHarmNow(); layout(); }
+
+/* Desplaza solo la lista de pistas (scrollIntoView movería también la página). */
+function revealActiveTrack(center){
+  const list = $('trackList'), el = list.querySelector('.trk.sel'); if(!el) return;
+  const top = el.offsetTop - list.offsetTop, h = el.offsetHeight, vh2 = list.clientHeight;
+  if(center) list.scrollTop = Math.max(0, top - (vh2 - h) / 2);
+  else if(top < list.scrollTop) list.scrollTop = top; else if(top + h > list.scrollTop + vh2) list.scrollTop = top + h - vh2;
+}
 /* ===== Interfaz (2/2): acciones de edición, teclado, diálogos, bucle de animación, inicio ===== */
 let kbBase = 48;
 
@@ -1721,13 +1917,13 @@ function loadProject(P){
   if(T.playing){ stopTransportNow(); finishRecording(); }
   S = normalize(P); activeId = S.tracks[0].id; sel.clear(); range = null; curTick = 0; V.lastDur = 48;
   if(live){ live.nodes.clear(); applyMixTo(live, S, true); setRoom(S.master.room); }
-  afterLoad(); selectTrack(activeId); scroller.scrollLeft = 0; scroller.scrollTop = 0; ensureTrackVisible(); updateRegionUI();
+  afterLoad(); selectTrack(activeId); scroller.scrollLeft = 0; scroller.scrollTop = 0; ensureTrackVisible(); updateRegionUI(); refreshSelBar();
 }
 function afterLoad(){
   rebuildTimeline(); eventsDirty = true; chordDirty = true;
   sel.forEach(id => { if(!findNote(id)) sel.delete(id); });
   if(live){ for(const k of [...live.nodes.keys()]) if(!byId(k)) live.nodes.delete(k); applyMixTo(live, S, false); setRoom(S.master.room); }
-  syncControls(); refreshTracks(); syncInspector(); refreshPieceLists(); refreshHarmNow(); updateTransportUI(); updateRegionUI(); layout(); saveSoon();
+  syncControls(); refreshTracks(); syncInspector(); refreshPieceLists(); refreshHarmNow(); updateTransportUI(); updateRegionUI(); layout(); saveSoon(); refreshSelBar();
 }
 function demoProject(){
   const P = newProject('none'); P.title = 'Ejemplo en Re menor (puedes reemplazarlo)'; P.bars = 8; P.tempos = [{ bar:0, bpm:84 }]; P.key = { root:2, scale:'minor' };
@@ -1790,9 +1986,9 @@ document.addEventListener('keydown', e => {
   }
   if(e.altKey) return;
   if(k === ' '){ e.preventDefault(); togglePlay(); return; }
-  if(k === 'home'){ e.preventDefault(); stopAll(); scroller.scrollLeft = 0; return; }
+  if(k === 'home'){ e.preventDefault(); goStart(); return; }
   if(k === 'delete' || k === 'backspace'){ e.preventDefault(); deleteSel(); return; }
-  if(k === 'escape'){ sel.clear(); setRange(null); requestDraw(); return; }
+  if(k === 'escape'){ if(document.body.dataset.sheet){ closeSheet(); return; } sel.clear(); setRange(null); requestDraw(); refreshSelBar(); return; }
   if(sel.size && k.startsWith('arrow')){
     e.preventDefault(); const ns = selNotes().map(o => o.n), g = snapTicks() > 1 ? snapTicks() : 12;
     if(k === 'arrowup' || k === 'arrowdown'){ transposeBy((k === 'arrowup' ? 1 : -1) * (e.shiftKey ? 12 : 1)); }
@@ -1813,6 +2009,23 @@ document.addEventListener('keyup', e => {
 });
 window.addEventListener('blur', () => { for(const [k, p] of heldKeys) recNoteOff(p); heldKeys.clear(); });
 
+/* ----- Hojas inferiores (teléfono) y barra de selección ----- */
+function openSheet(name){
+  if(!isPhone()) return;
+  if(document.body.dataset.sheet === name){ closeSheet(); return; }
+  document.body.dataset.sheet = name;
+  if(name === 'insp') refreshHarmNow();
+  if(name === 'tracks') requestAnimationFrame(() => revealActiveTrack(true));
+}
+function closeSheet(){ delete document.body.dataset.sheet; }
+function refreshSelBar(){
+  const bar = $('selBar'); if(!bar || !S) return;
+  const act = activeTrack(), n = act ? act.notes.filter(x => sel.has(x.id)).length : 0;
+  const show = isPhone() && n > 0;
+  if(bar.hidden === show){ bar.hidden = !show; layoutSoon(); }
+  if(show) $('selCount').textContent = n + (n === 1 ? ' nota' : ' notas');
+}
+
 /* ----- Herramientas y botones ----- */
 function setTool(t){
   V.tool = t; document.querySelectorAll('[data-tool]').forEach(b => b.setAttribute('aria-pressed', b.dataset.tool === t)); cv.classList.toggle('hand', t === 'hand'); cv.style.cursor = t === 'hand' ? 'grab' : 'default';
@@ -1824,12 +2037,26 @@ function showTab(name){
 function bindUI(){
   document.querySelectorAll('[data-tool]').forEach(b => b.addEventListener('click', () => setTool(b.dataset.tool)));
   document.querySelectorAll('[data-tab]').forEach(b => b.addEventListener('click', () => showTab(b.dataset.tab)));
-  $('btnPlay').onclick = togglePlay; $('btnStop').onclick = () => { stopAll(); scroller.scrollLeft = 0; };
+  $('btnPlay').onclick = togglePlay; $('btnStop').onclick = stopAll; $('btnStart').onclick = goStart;
+  $('mPlay').onclick = togglePlay; $('mStart').onclick = goStart; $('mRec').onclick = () => $('btnRec').click();
+  $('mUndo').onclick = undo; $('mRedo').onclick = redo;
+  $('mMenu').onclick = () => openSheet('top'); $('mTitle').onclick = () => openSheet('top'); $('mTrack').onclick = () => openSheet('tracks');
+  $('mEdit').onclick = () => openSheet('tools'); $('mSet').onclick = () => openSheet('insp');
+  document.querySelectorAll('.sh-close').forEach(b => b.addEventListener('click', closeSheet)); $('sheetBg').addEventListener('click', closeSheet);
+  $('btnVel').onclick = () => { V.vel = !V.vel; $('btnVel').setAttribute('aria-pressed', V.vel); layout(); };
+  $('btnVel').setAttribute('aria-pressed', V.vel);
+  document.querySelectorAll('[data-sel]').forEach(b => b.addEventListener('click', () => {
+    const k = b.dataset.sel;
+    if(k === 'oct-') transposeBy(-12); else if(k === 'oct+') transposeBy(12); else if(k === 'dn') transposeBy(-1); else if(k === 'up') transposeBy(1);
+    else if(k === 'dup') dupSel(); else if(k === 'del') deleteSel(); else if(k === 'clear'){ sel.clear(); requestDraw(); }
+    refreshSelBar();
+  }));
+  MQ_PHONE.addEventListener('change', () => { closeSheet(); refreshSelBar(); layout(); });
   $('btnRec').onclick = () => { T.rec = !T.rec; if(!T.rec) finishRecording(); updateTransportUI(); if(T.rec) toast('Grabación armada: pulsa Reproducir y toca el teclado del ordenador o el de pantalla.'); };
   $('btnLoop').onclick = () => { T.loop = !T.loop; updateTransportUI(); if(T.playing){ pauseTransport(); startTransport(); } };
   $('btnMet').onclick = () => { T.metro = !T.metro; updateTransportUI(); }; $('btnCount').onclick = () => { T.count = !T.count; updateTransportUI(); };
   $('btnUndo').onclick = undo; $('btnRedo').onclick = redo;
-  $('title').addEventListener('input', e => { S.title = e.target.value; saveSoon(); });
+  $('title').addEventListener('input', e => { S.title = e.target.value; $('mTitle').textContent = S.title || 'Sin título'; saveSoon(); });
   $('bpm').addEventListener('change', e => { mutate(() => { S.tempos[0].bpm = clamp(Math.round(+e.target.value) || 96, 20, 300); }, { panels:true }); });
   $('meter').addEventListener('change', e => { const [n, d] = e.target.value.split('/').map(Number); mutate(() => { S.meters[0].n = n; S.meters[0].d = d; }, { panels:true }); });
   $('keyRoot').addEventListener('change', e => { mutate(() => { S.key.root = +e.target.value; }, { panels:true }); });
@@ -1850,12 +2077,12 @@ function bindUI(){
   $('btnZoomIn').onclick = () => setZoom(V.ppt * 1.3); $('btnZoomOut').onclick = () => setZoom(V.ppt / 1.3);
   $('btnKbd').onclick = () => { V.kbd = !V.kbd; $('kbd').hidden = !V.kbd; $('btnKbd').setAttribute('aria-pressed', V.kbd); buildKeys(); layout(); };
   $('btnRegionClear').onclick = () => setRange(null);
-  $('btnNew').onclick = () => { $('dlgNew').hidden = false; };
+  $('btnNew').onclick = () => { closeSheet(); $('dlgNew').hidden = false; };
   $('newCancel').onclick = () => { $('dlgNew').hidden = true; };
   const nw = (kind) => { $('dlgNew').hidden = true; checkpoint(); loadProject(kind === 'demo' ? demoProject() : newProject(kind)); toast(kind === 'template' ? 'Plantilla de orquesta lista: 15 pistas.' : kind === 'demo' ? 'Ejemplo cargado.' : 'Obra en blanco.'); };
   $('newTemplate').onclick = () => nw('template'); $('newBlank').onclick = () => nw('blank'); $('newDemo').onclick = () => nw('demo');
-  $('btnOpen').onclick = () => $('fileIn').click(); $('fileIn').onchange = e => { const f = e.target.files[0]; if(f) importFile(f); e.target.value = ''; };
-  $('btnExport').onclick = () => { $('exMsg').textContent = ''; $('dlgExport').hidden = false; };
+  $('btnOpen').onclick = () => { closeSheet(); $('fileIn').click(); }; $('fileIn').onchange = e => { const f = e.target.files[0]; if(f) importFile(f); e.target.value = ''; };
+  $('btnExport').onclick = () => { closeSheet(); $('exMsg').textContent = ''; $('dlgExport').hidden = false; };
   $('exClose').onclick = () => { $('dlgExport').hidden = true; };
   $('exMidi').onclick = exportMidi; $('exWav').onclick = exportWav; $('exJson').onclick = exportJson;
   document.querySelectorAll('.dlg').forEach(d => d.addEventListener('pointerdown', e => { if(e.target === d) d.hidden = true; }));
@@ -1868,17 +2095,19 @@ let lastPos = '', meterV = 0, anBuf = null;
 function frame(){
   if(T.playing){
     const tick = playingTick(), txt = fmtPos(tick);
-    if(txt !== lastPos){ $('pos').textContent = txt; lastPos = txt; }
+    if(txt !== lastPos){ $('pos').textContent = txt; $('mPos').textContent = shortPos(tick); lastPos = txt; }
     const x = tick * V.ppt - scroller.scrollLeft + KEYW;
     if(x > vw - 30 || x < KEYW) scroller.scrollLeft = Math.max(0, tick * V.ppt - 50);
-    if(!T.loop && tick >= endTick() && curSec() > tickToSec(endTick()) + 0.2){ stopAll(); scroller.scrollLeft = 0; }
+    if(!T.loop && tick >= endTick() && curSec() > tickToSec(endTick()) + 0.2){ stopAll(); }
     draw();
     if(Math.floor(tick / PPQ) !== frame.lastBeat){ frame.lastBeat = Math.floor(tick / PPQ); if(!$('tabHarm').hidden) refreshHarmNow(); }
-  } else { const txt = fmtPos(curTick); if(txt !== lastPos){ $('pos').textContent = txt; lastPos = txt; } }
+  } else { const txt = fmtPos(curTick); if(txt !== lastPos){ $('pos').textContent = txt; $('mPos').textContent = shortPos(curTick); lastPos = txt; } }
   if(live && live.an){ if(!anBuf) anBuf = new Uint8Array(live.an.fftSize); live.an.getByteTimeDomainData(anBuf); let pk = 0; for(let i = 0; i < anBuf.length; i++){ const v = Math.abs(anBuf[i] - 128) / 128; if(v > pk) pk = v; }
     meterV = Math.max(pk, meterV * 0.9); const m = $('mMeter'); m.style.width = Math.min(100, meterV * 120) + '%'; m.style.background = meterV > 0.9 ? 'var(--danger)' : 'var(--ok)'; }
   requestAnimationFrame(frame);
 }
+
+function shortPos(t){ const p = posInfo(t), s = tickToSec(t), m = Math.floor(s / 60), r = Math.floor(s - m * 60); return (p.bar + 1) + '·' + (p.beat + 1) + ' ' + m + ':' + String(r).padStart(2, '0'); }
 
 /* ----- Inicio ----- */
 function init(){

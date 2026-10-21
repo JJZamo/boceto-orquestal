@@ -24,7 +24,18 @@ Boceteador orquestal que funciona en el navegador, sin instalar nada. Piano roll
 2. Toca el botón de compartir y elige **Añadir a pantalla de inicio**.
 3. Ábrela desde el ícono: corre a pantalla completa y sigue funcionando sin conexión.
 
-Consejos para el iPhone: sube el volumen y desactiva el modo silencio para oír el audio. En el piano roll, la herramienta **Mano** desplaza la vista con el dedo; con el **Lápiz** el dedo dibuja notas.
+Consejos para el iPhone: sube el volumen y desactiva el modo silencio para oír el audio.
+
+## Uso en el teléfono
+
+- **Arriba:** menú de la obra (título, tempo, compás, tonalidad, cuadrícula, bucle, archivo), pista activa y transporte. El botón ⏮ vuelve al inicio; si está sonando, empieza de nuevo desde ahí.
+- **Abajo:** Lápiz, Selección, Borrar, Edición (copiar, transponer, dinámicas, vista) y Ajustes (pista, armonía, pieza).
+- **Gestos en el piano roll:**
+  - Un dedo dibuja, mueve y alarga notas.
+  - Dos dedos desplazan la vista; pellizca para acercar o alejar.
+  - Toque largo sobre una nota la agrega a la selección.
+  - Doble toque sobre una nota la borra.
+- Con notas seleccionadas aparece una barra con -8va, -1, +1, +8va, Duplicar y Borrar.
 
 ## Archivos
 
