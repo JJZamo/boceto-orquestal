@@ -151,9 +151,9 @@ input[type=range]{accent-color:var(--accent); min-width:0}
 .roll-wrap{flex:1; min-height:300px; position:relative; background:var(--roll); border-radius:0 0 var(--r-md) var(--r-md); overflow:hidden}
 .scroller{position:absolute; inset:0; overflow:auto; overscroll-behavior:contain}
 .sizer{position:relative}
-#roll{position:sticky; top:0; left:0; display:block; touch-action:none}
+#roll{position:sticky; top:0; left:0; display:block; touch-action:none; -webkit-user-select:none; user-select:none; -webkit-touch-callout:none}
 #roll.hand{touch-action:pan-x pan-y}
-.kbd{display:flex; height:96px; border-top:1px solid var(--line); background:var(--panel2); position:relative; user-select:none; touch-action:none; overflow:hidden}
+.kbd{-webkit-user-select:none; -webkit-touch-callout:none; display:flex; height:96px; border-top:1px solid var(--line); background:var(--panel2); position:relative; user-select:none; touch-action:none; overflow:hidden}
 .kbd .k{position:absolute; top:0; bottom:0; border:1px solid var(--line); border-top:0; background:var(--key-w); border-radius:0 0 4px 4px}
 .kbd .k.b{background:var(--key-b); z-index:2; bottom:38%; border-color:var(--key-b)}
 .kbd .k.on{background:var(--accent)}
@@ -161,14 +161,9 @@ input[type=range]{accent-color:var(--accent); min-width:0}
 .kbd .k.b span{display:none}
 .kbd[hidden]{display:none}
 
-/* Estado vacío del piano roll: guía sin bloquear el toque */
-.empty{position:absolute; inset:0; display:grid; place-items:center; padding:var(--s5); pointer-events:none; z-index:2}
+/* Pista vacía: una pista discreta de una línea que no bloquea el toque y se va al primer contacto */
+.empty{position:absolute; left:50%; top:calc(55px + var(--s3)); transform:translateX(-50%); z-index:2; pointer-events:none; max-width:calc(100% - 72px); padding:var(--s1) var(--s3); border-radius:999px; background:var(--panel); border:1px solid var(--line); color:var(--ink2); font-size:var(--fs-1); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; opacity:.94; transition:opacity .25s ease}
 .empty[hidden]{display:none}
-.empty-card{max-width:300px; text-align:center; display:grid; gap:var(--s2); justify-items:center; padding:var(--s5); border-radius:var(--r-lg); background:color-mix(in srgb, var(--panel) 88%, transparent); border:1px solid var(--accent-line); box-shadow:var(--shadow); -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px)}
-.empty-ic{width:44px; height:44px; border-radius:50%; display:grid; place-items:center; background:var(--accent-soft); color:var(--accent)}
-.empty-ic svg{width:22px; height:22px; fill:currentColor}
-.empty-card b{font-size:var(--fs-3); font-weight:var(--fw-2)}
-.empty-card p{margin:0; color:var(--ink2); font-size:var(--fs-2)}
 
 /* Inspector */
 .tabs{display:flex; border-bottom:1px solid var(--line)}
@@ -409,7 +404,7 @@ body{-webkit-text-size-adjust:100%; touch-action:manipulation}
       <input id="fileIn" type="file" accept=".json,.mid,.midi,audio/midi,application/json" hidden>
     </div>
     <span id="status" class="status" role="status">Listo</span>
-    <span class="status">Versión 5 · tema y posición</span>
+    <span class="status">Versión 6 · toque corregido</span>
   </header>
 
   <main class="work">
@@ -471,13 +466,7 @@ body{-webkit-text-size-adjust:100%; touch-action:manipulation}
         <button id="btnRegionClear" class="btn" hidden>Quitar región</button>
       </div>
       <div id="rollWrap" class="roll-wrap">
-        <div id="emptyHint" class="empty" hidden>
-          <div class="empty-card">
-            <span class="empty-ic" data-ic="pencil"></span>
-            <b id="emptyTitle">Esta pista aún no tiene notas</b>
-            <p id="emptyText">Toca la cuadrícula para escribir la primera nota.</p>
-          </div>
-        </div>
+        <div id="emptyHint" class="empty" aria-live="polite" hidden></div>
         <div id="scroller" class="scroller"><div id="sizer" class="sizer"><canvas id="roll" aria-label="Piano roll: cuadrícula de notas"></canvas></div></div>
       </div>
       <div id="selBar" class="selbar" role="toolbar" aria-label="Notas seleccionadas" hidden>
@@ -1685,7 +1674,11 @@ function movePinch(){
 }
 cv.addEventListener('pointerdown', e => {
   if(e.button === 2) return;
+  if(e.pointerType !== 'touch') dismissEmpty();
   if(e.pointerType === 'touch'){
+    // Primer dedo de un toque nuevo: descarta punteros que iOS no cerró y que dejarían el lienzo trabado
+    if(e.isPrimary){ ptrs.clear(); pinch = null; }
+    dismissEmpty();
     const q = localXY(e); ptrs.set(e.pointerId, q);
     if(ptrs.size === 2){ cancelDragForGesture(); startPinch(); try{ cv.setPointerCapture(e.pointerId); }catch(_){} return; }
     if(ptrs.size > 2 || pinch) return;
@@ -1803,6 +1796,10 @@ function endDrag(e){
   refreshHarmNow(); refreshSelBar();
 }
 cv.addEventListener('pointerup', endDrag); cv.addEventListener('pointercancel', endDrag);
+cv.addEventListener('lostpointercapture', e => { if(e.pointerType === 'touch' && ptrs.has(e.pointerId)) endDrag(e); });
+/* Red de seguridad: cuando no queda ningún dedo en pantalla, el lienzo vuelve a estado limpio. */
+const resetTouches = e => { if(e.touches && e.touches.length) return; ptrs.clear(); pinch = null; if(drag && drag.mode === 'key' && drag.rel) drag.rel(); };
+window.addEventListener('touchend', resetTouches, { passive:true }); window.addEventListener('touchcancel', resetTouches, { passive:true });
 cv.addEventListener('contextmenu', e => {
   e.preventDefault(); const { x, y } = localXY(e); const h = noteAt(x, y);
   if(h){ checkpoint(); const act = activeTrack(); act.notes = act.notes.filter(n => n !== h.n); sel.delete(h.n.id); touch(); }
@@ -2171,15 +2168,14 @@ function pieceSummary(){
   const bars = last ? posInfo(Math.max(0, last - 1)).bar + 1 : 0;
   return used + (used === 1 ? ' pista' : ' pistas') + ' · ' + bars + (bars === 1 ? ' compás' : ' compases') + ' · ' + m + ':' + String(r).padStart(2, '0') + ' min';
 }
+let emptyDismissed = null;
 function refreshEmpty(){
   const el = $('emptyHint'); if(!el || !S) return;
-  const act = activeTrack(), show = V.view === 'roll' && act && act.notes.length === 0;
+  const act = activeTrack(), show = V.view === 'roll' && act && act.notes.length === 0 && emptyDismissed !== act.id;
   el.hidden = !show; if(!show) return;
-  $('emptyTitle').textContent = act.name + ' aún no tiene notas';
-  $('emptyText').textContent = isCoarse()
-    ? 'Toca la cuadrícula para escribir la primera nota. Usa dos dedos para moverte y pellizca para acercar.'
-    : 'Haz clic en la cuadrícula para escribir la primera nota. Arrastra su borde derecho para alargarla.';
+  el.textContent = act.name + ' está vacía · ' + (isCoarse() ? 'toca' : 'haz clic') + ' para escribir una nota';
 }
+function dismissEmpty(){ const a = activeTrack(); if(a) emptyDismissed = a.id; const el = $('emptyHint'); if(el) el.hidden = true; }
 function showIntro(){
   const touchy = isCoarse(), steps = touchy ? [
     ['pencil', 'Escribe con un dedo', 'Toca la cuadrícula para poner una nota; arrástrala para moverla.'],
