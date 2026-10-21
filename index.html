@@ -198,6 +198,23 @@ input[type=range]{accent-color:var(--accent); min-width:0}
 .chord-list button{border:1px solid var(--accent-line); background:var(--accent-5); border-radius:6px; padding:var(--s1) var(--s2); font:var(--fs-1) var(--mono)}
 .chord-list button:hover{border-color:var(--accent)}
 
+/* Inicio de sesión al abrir (solo en la versión instalada) */
+.login{position:fixed; inset:0; z-index:70; display:grid; place-items:center; background:var(--bg); padding:max(var(--s5), env(safe-area-inset-top, 0px)) max(var(--s5), env(safe-area-inset-right, 0px)) max(var(--s5), env(safe-area-inset-bottom, 0px)) max(var(--s5), env(safe-area-inset-left, 0px))}
+.login[hidden]{display:none}
+.login-card{width:min(360px, 100%); display:grid; justify-items:center; gap:var(--s4); text-align:center; animation:rise-in .4s cubic-bezier(.2,1,.3,1) both}
+.login-mark{width:96px; display:grid; gap:6px; padding:var(--s3); border-radius:var(--r-lg); background:var(--panel); border:1px solid var(--line)}
+.login-mark i{display:block; height:10px; border-radius:3px; background:var(--c)}
+.login-t{margin:var(--s2) 0 0; font:var(--fw-2) var(--fs-4)/1.2 var(--ui)}
+.login-p{margin:0; color:var(--ink2); font-size:var(--fs-2); line-height:1.5; max-width:30ch}
+.login-go{width:100%; height:48px; margin-top:var(--s2); display:flex; align-items:center; justify-content:center; gap:var(--s3); border-radius:var(--r-md); border:0; background:var(--accent); color:var(--accent-ink); font-size:var(--fs-3); font-weight:var(--fw-2); box-shadow:inset 0 1px 0 rgba(255,255,255,.28); transition:transform .08s ease, opacity .15s ease}
+.login-go:active{transform:scale(.97)} .login-go:disabled{opacity:.55; cursor:default; transform:none}
+.login-go svg{width:20px; height:20px; fill:currentColor}
+.login-note{margin:0; min-height:1.4em; font-size:var(--fs-1); color:var(--ink3)}
+.login-note[data-err]{color:var(--danger)}
+.login-skip{height:var(--tap); padding:0 var(--s4); border:0; background:none; color:var(--ink2); font-size:var(--fs-2); text-decoration:underline; text-underline-offset:3px}
+@keyframes rise-in{0%{transform:translateY(12px); opacity:0} 100%{transform:none; opacity:1}}
+@media (prefers-reduced-motion:reduce){ .login-card{animation:none} }
+
 /* Diálogos y avisos */
 .dlg{position:fixed; inset:0; z-index:50; background:var(--scrim); display:grid; place-items:center; padding:var(--s4)}
 .dlg[hidden]{display:none}
@@ -422,7 +439,7 @@ body{-webkit-text-size-adjust:100%; touch-action:manipulation}
       <input id="fileIn" type="file" accept=".json,.mid,.midi,audio/midi,application/json" hidden>
     </div>
     <span id="status" class="status" role="status">Listo</span>
-    <span class="status">Versión 7 · negro y Drive</span>
+    <span class="status">Versión 8 · inicio de sesión</span>
   </header>
 
   <main class="work">
@@ -656,6 +673,17 @@ body{-webkit-text-size-adjust:100%; touch-action:manipulation}
     <div class="txt"><b>Fin de la obra</b><span id="endSum" class="sum"></span></div>
     <button id="endAgain" class="btn pri">Escuchar de nuevo</button>
     <button id="endX" class="x" data-ic="close" aria-label="Cerrar"></button>
+  </div>
+
+  <div id="login" class="login" hidden>
+    <div class="login-card" role="dialog" aria-labelledby="loginT" aria-describedby="loginText">
+      <div class="login-mark" aria-hidden="true"><i style="--c:var(--c-str); width:46%"></i><i style="--c:var(--c-wood); width:70%; margin-left:22%"></i><i style="--c:var(--c-keys); width:38%; margin-left:8%"></i><i style="--c:var(--c-brass); width:58%; margin-left:36%"></i></div>
+      <h1 id="loginT" class="login-t">Boceto Orquestal</h1>
+      <p id="loginText" class="login-p">Inicia sesión con Google para guardar tus obras en Drive y abrirlas igual en tu PC y tu iPhone.</p>
+      <button id="loginGo" class="login-go" disabled><span data-ic="cloud"></span><span id="loginGoTxt">Cargando Google…</span></button>
+      <p id="loginNote" class="login-note" role="status"></p>
+      <button id="loginSkip" class="login-skip">Seguir sin conectar</button>
+    </div>
   </div>
 
   <div id="toast" role="status"></div>
@@ -1885,6 +1913,7 @@ const ICONS = {
   edit:'<svg viewBox="0 0 24 24"><path d="M3 5h12v2H3zM3 11h8v2H3zM3 17h6v2H3zM20.7 9.3l-1.4-1.4a1 1 0 00-1.4 0L11 14.8V18h3.2l6.5-6.5a1 1 0 000-1.4z"/></svg>',
   gear:'<svg viewBox="0 0 24 24"><path fill-rule="evenodd" d="M10.3 2h3.4l.5 2.6c.6.2 1.2.5 1.7.9l2.5-.9 1.7 2.9-2 1.8c.1.6.1 1.2 0 1.8l2 1.8-1.7 2.9-2.5-.9c-.5.4-1.1.7-1.7.9l-.5 2.6h-3.4l-.5-2.6a7 7 0 01-1.7-.9l-2.5.9-1.7-2.9 2-1.8a6 6 0 010-1.8l-2-1.8 1.7-2.9 2.5.9c.5-.4 1.1-.7 1.7-.9zM12 8.5a3.5 3.5 0 100 7 3.5 3.5 0 000-7z" transform="translate(0 1)"/></svg>',
   check:'<svg viewBox="0 0 24 24"><path d="M9.5 16.2L5.3 12l-1.4 1.4 5.6 5.6L20.1 8.4 18.7 7z"/></svg>',
+  cloud:'<svg viewBox="0 0 24 24"><path d="M19.4 10.1A7 7 0 006.2 8.2 5.5 5.5 0 006.5 19h12.3a4.5 4.5 0 00.6-8.9zM10.5 16.4l-3.2-3.2 1.4-1.4 1.8 1.8 4.6-4.6 1.4 1.4z"/></svg>',
   close:'<svg viewBox="0 0 24 24"><path d="M6.4 5L12 10.6 17.6 5 19 6.4 13.4 12l5.6 5.6-1.4 1.4-5.6-5.6L6.4 19 5 17.6 10.6 12 5 6.4z"/></svg>',
   zout:'<svg viewBox="0 0 24 24"><path fill-rule="evenodd" d="M10 4a6 6 0 014.7 9.7l5 5-1.4 1.4-5-5A6 6 0 1110 4zm0 2a4 4 0 100 8 4 4 0 000-8zM7.5 9h5v2h-5z"/></svg>'
 };
@@ -2146,7 +2175,7 @@ function buildKeys(){
 }
 function typing(e){ const t = e.target; return t && (t.tagName === 'INPUT' && t.type !== 'range' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT'); }
 document.addEventListener('keydown', e => {
-  if(typing(e) || !$('dlgNew').hidden || !$('dlgExport').hidden || !$('dlgIntro').hidden || !$('dlgWorks').hidden) { if(e.key === 'Escape'){ $('dlgNew').hidden = true; $('dlgExport').hidden = true; $('dlgWorks').hidden = true; if(!$('dlgIntro').hidden) closeIntro(); } return; }
+  if(typing(e) || !$('dlgNew').hidden || !$('dlgExport').hidden || !$('dlgIntro').hidden || !$('dlgWorks').hidden || !$('login').hidden) { if(e.key === 'Escape'){ $('dlgNew').hidden = true; $('dlgExport').hidden = true; $('dlgWorks').hidden = true; if(!$('dlgIntro').hidden) closeIntro(); } return; }
   const mod = e.ctrlKey || e.metaKey, k = e.key.toLowerCase();
   if(mod){
     if(k === 'z'){ e.preventDefault(); e.shiftKey ? redo() : undo(); } else if(k === 'y'){ e.preventDefault(); redo(); }
@@ -2393,23 +2422,23 @@ window.DriveSync = (() => {
   /* ----- Sesión ----- */
   function loadGis(){
     const s = document.createElement('script'); s.src = 'https://accounts.google.com/gsi/client'; s.async = true;
-    s.onload = () => { gisReady = true; };
-    s.onerror = () => { if(state === 'off') note = 'Sin conexión con Google'; render(); };
+    s.onload = () => { gisReady = true; loginReady(); };
+    s.onerror = () => { if(state === 'off') note = 'Sin conexión con Google'; render(); loginNote('No se pudo contactar a Google. Revisa tu conexión o sigue sin conectar.', true); };
     document.head.appendChild(s);
   }
   function connect(){
     if(!gisReady || !window.google || !google.accounts){ toast('Cargando el inicio de sesión de Google; intenta de nuevo en unos segundos.'); return; }
     if(!client) client = google.accounts.oauth2.initTokenClient({
       client_id:CLIENT_ID, scope:SCOPE, callback:onToken,
-      error_callback:e => setState(ls.get(WANT) ? 'expired' : 'off', e && e.type === 'popup_closed' ? 'Conexión cancelada' : 'No se pudo conectar')
+      error_callback:e => { const m = e && e.type === 'popup_closed' ? 'Cerraste la ventana de Google antes de terminar.' : 'No se pudo abrir el inicio de sesión de Google.'; setState(ls.get(WANT) ? 'expired' : 'off', m); loginNote(m + ' Intenta de nuevo.', true); }
     });
     client.requestAccessToken({ prompt:ls.get(WANT) ? '' : 'consent' });
   }
   async function onToken(r){
-    if(!r || r.error){ setState(ls.get(WANT) ? 'expired' : 'off', 'No se pudo conectar'); return; }
+    if(!r || r.error){ setState(ls.get(WANT) ? 'expired' : 'off', 'No se pudo conectar'); loginNote('Google no autorizó la conexión. Intenta de nuevo.', true); return; }
     token = r.access_token; exp = Date.now() + (r.expires_in || 3600) * 1000;
     ls.set(TK, token); ls.set(TE, String(exp)); ls.set(WANT, '1');
-    setState('on'); toast('Drive conectado');
+    setState('on'); hideLogin(); toast('Drive conectado');
     await reconcile(true);
   }
   function disconnect(){
@@ -2523,7 +2552,29 @@ window.DriveSync = (() => {
     }catch(e){ if(e.message !== 'expired') box.replaceChildren(h('p', { class:'note-txt' }, 'No se pudo leer Drive. Revisa tu conexión e intenta de nuevo.')); else box.replaceChildren(h('p', { class:'note-txt' }, 'La sesión venció. Toca Reconectar en el menú de la obra.')); }
   }
 
+  /* ----- Inicio de sesión al abrir ----- */
+  let introPending = false;
+  function loginNote(t, err){ const n = $('loginNote'); if(!n) return; n.textContent = t || ''; if(err) n.dataset.err = '1'; else delete n.dataset.err; }
+  function loginReady(){ const b = $('loginGo'); if(!b) return; b.disabled = false; $('loginGoTxt').textContent = ls.get(WANT) ? 'Reconectar con Google' : 'Continuar con Google'; }
+  function showLogin(){
+    const expired = !!ls.get(WANT);
+    $('loginText').textContent = expired
+      ? 'Tu sesión de Google venció. Reconecta para guardar y abrir tus obras en Drive.'
+      : 'Inicia sesión con Google para guardar tus obras en Drive y abrirlas igual en tu PC y tu iPhone.';
+    if(gisReady) loginReady();
+    if(!navigator.onLine) loginNote('Sin internet: puedes seguir sin conectar y tus cambios se subirán después.', false);
+    if(!$('dlgIntro').hidden){ $('dlgIntro').hidden = true; introPending = true; }
+    $('login').hidden = false; $('loginGo').focus();
+  }
+  function hideLogin(){
+    if($('login').hidden) return;
+    $('login').hidden = true; loginNote('');
+    if(introPending){ introPending = false; showIntro(); }
+  }
+
   function init(){
+    $('loginGo').onclick = () => { loginNote('Abriendo Google…'); connect(); };
+    $('loginSkip').onclick = () => { hideLogin(); toast('Sin conectar: tus cambios se guardan en este equipo.'); };
     $('driveBox').hidden = false;
     $('driveConnect').onclick = () => { if(state === 'off' || state === 'expired') connect(); else disconnect(); };
     $('driveWorks').onclick = openWorks;
@@ -2534,8 +2585,7 @@ window.DriveSync = (() => {
     window.addEventListener('pagehide', flushNow);
     loadGis();
     if(valid()){ setState('on'); reconcile(false); }
-    else if(ls.get(WANT)) setState('expired', 'Sesión vencida: toca Reconectar');
-    else setState('off');
+    else { if(ls.get(WANT)) setState('expired', 'Sesión vencida: toca Reconectar'); else setState('off'); showLogin(); }
   }
   return { init, schedule, flushNow, connected:valid };
 })();
