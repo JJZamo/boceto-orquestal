@@ -26,6 +26,18 @@ Boceteador orquestal que funciona en el navegador, sin instalar nada. Piano roll
 
 Consejos para el iPhone: sube el volumen y desactiva el modo silencio para oír el audio.
 
+## Google Drive: las mismas obras en la PC y el iPhone
+
+1. Abre el menú de la obra y toca **Conectar** en la sección Google Drive. Usa la misma cuenta de Google en todos tus equipos.
+2. Cada cambio se sube solo unos segundos después. Al volver a la app, abre la versión más reciente que haya en Drive.
+3. En **Mis obras** ves todas tus obras guardadas y puedes abrir o eliminar cualquiera.
+
+Las obras se guardan en la carpeta privada de la app en tu Drive (la misma conexión que usa Mustang EB), así que no aparecen entre tus archivos normales. La sesión de Google dura una hora; después basta con tocar **Reconectar**.
+
+## Tema
+
+La app es negra por defecto. En el menú de la obra, **Tema** permite cambiar a **Claro**.
+
 ## Uso en el teléfono
 
 - **Arriba:** menú de la obra (título, tempo, compás, tonalidad, cuadrícula, archivo y guía), pista activa, deshacer y rehacer.

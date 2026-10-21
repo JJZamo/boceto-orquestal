@@ -5,32 +5,33 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Boceto Orquestal</title>
 <meta name="description" content="Boceteador orquestal con piano roll, pistas ilimitadas, mezclador y exportación a MIDI y WAV.">
-<meta name="theme-color" id="metaTheme" content="#eceff4">
+<meta name="theme-color" id="metaTheme" content="#000000">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Boceto">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" type="image/png" href="icon-192.png">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap">
 <style>
-:root{color-scheme:light; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px)}
+:root{color-scheme:dark; background:#000; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px)}
 body{margin:0; font:14px system-ui,sans-serif}
 img{max-width:100%}
 [hidden]{display:none!important}
 /* Layout: barra superior, pistas a la izquierda, piano roll al centro, inspector a la derecha; en teléfono, piano roll a pantalla completa con barras y hojas inferiores. */
 :root{
-  /* Color 60/30/10: neutros de base, tinta para el texto, acento solo para acciones y estado activo */
-  --bg:#eceff4; --panel:#f6f7fa; --panel2:#e8ebf1; --ink:#171b26; --ink2:#454c60; --ink3:#5f667b; --line:#d3d8e2;
-  --accent:#2f4fd0; --accent-ink:#ffffff; --accent-soft:rgba(47,79,208,.12); --accent-5:rgba(47,79,208,.05); --accent-line:rgba(47,79,208,.16);
-  --danger:#b8342f; --ok:#2e8a5a;
-  --roll:#fbfcfe; --roll-black:#eef0f6; --roll-scale:rgba(47,79,208,.07); --roll-root:rgba(47,79,208,.17);
-  --grid-beat:#dde1ea; --grid-bar:#aeb5c6; --grid-sub:#eceff5; --key-w:#ffffff; --key-b:#2a2f3d;
-  --c-str:#b9801a; --c-wood:#2f8f6a; --c-brass:#c4582f; --c-perc:#b84a79; --c-keys:#7b5cb8; --c-syn:#1f93a6;
-  --shadow:0 8px 24px rgba(47,79,208,.10), 0 2px 6px rgba(47,79,208,.06);
-  --shadow-up:0 -8px 32px rgba(47,79,208,.14);
-  --scrim:rgba(23,27,38,.36);
+  /* Negro como base (60%), grafito y tinta clara (30%), azul solo para acciones y estado activo (10%) */
+  --bg:#000000; --panel:#0c0c0f; --panel2:#16161b; --ink:#f2f2f5; --ink2:#b6b6c2; --ink3:#8b8b98; --line:#24242b;
+  --accent:#8ea2ff; --accent-ink:#05081a; --accent-soft:rgba(142,162,255,.16); --accent-5:rgba(142,162,255,.06); --accent-line:rgba(142,162,255,.20);
+  --danger:#ff6b63; --ok:#4fd18b;
+  --roll:#000000; --roll-black:#060608; --roll-scale:rgba(142,162,255,.07); --roll-root:rgba(142,162,255,.17);
+  --grid-beat:#17171d; --grid-bar:#33333d; --grid-sub:#0e0e12; --key-w:#24242b; --key-b:#050507; --key-ink:#9a9aa8;
+  --c-str:#e3aa45; --c-wood:#4fc89b; --c-brass:#f08156; --c-perc:#e873a4; --c-keys:#a98ff0; --c-syn:#45c6dc;
+  --shadow:0 8px 24px rgba(0,0,0,.7), 0 2px 6px rgba(0,0,0,.6);
+  --shadow-up:0 -8px 32px rgba(0,0,0,.8);
+  --scrim:rgba(0,0,0,.6);
+  color-scheme:dark;
 
   /* Tipografía: una familia (Plex Sans, con su variante mono para cifras), 4 tamaños y 2 pesos */
   --ui:'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
@@ -43,31 +44,18 @@ img{max-width:100%}
   --r-sm:8px; --r-md:12px; --r-lg:16px; --r-xl:24px;
   --ctl:32px; --tap:44px;
 }
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --bg:#0f1117; --panel:#171a23; --panel2:#20242f; --ink:#e9ebf3; --ink2:#b3b9cc; --ink3:#8d95ab; --line:#2b303f;
-    --accent:#8aa2ff; --accent-ink:#0b1030; --accent-soft:rgba(138,162,255,.16); --accent-5:rgba(138,162,255,.06); --accent-line:rgba(138,162,255,.18);
-    --danger:#ff7a72; --ok:#5ccf93;
-    --roll:#12141c; --roll-black:#0e1017; --roll-scale:rgba(138,162,255,.07); --roll-root:rgba(138,162,255,.18);
-    --grid-beat:#222735; --grid-bar:#3a4157; --grid-sub:#181c27; --key-w:#dfe3ee; --key-b:#1b1f2b;
-    --c-str:#e0a63f; --c-wood:#4fc397; --c-brass:#ee7d51; --c-perc:#e06f9f; --c-keys:#a58ae6; --c-syn:#42c1d6;
-    --shadow:0 8px 24px rgba(3,5,12,.5), 0 2px 6px rgba(3,5,12,.4);
-    --shadow-up:0 -8px 32px rgba(3,5,12,.6);
-    --scrim:rgba(3,5,12,.55);
-    color-scheme:dark;
-  }
-}
-:root[data-theme="dark"]{
-  --bg:#0f1117; --panel:#171a23; --panel2:#20242f; --ink:#e9ebf3; --ink2:#b3b9cc; --ink3:#8d95ab; --line:#2b303f;
-  --accent:#8aa2ff; --accent-ink:#0b1030; --accent-soft:rgba(138,162,255,.16); --accent-5:rgba(138,162,255,.06); --accent-line:rgba(138,162,255,.18);
-  --danger:#ff7a72; --ok:#5ccf93;
-  --roll:#12141c; --roll-black:#0e1017; --roll-scale:rgba(138,162,255,.07); --roll-root:rgba(138,162,255,.18);
-  --grid-beat:#222735; --grid-bar:#3a4157; --grid-sub:#181c27; --key-w:#dfe3ee; --key-b:#1b1f2b;
-  --c-str:#e0a63f; --c-wood:#4fc397; --c-brass:#ee7d51; --c-perc:#e06f9f; --c-keys:#a58ae6; --c-syn:#42c1d6;
-  --shadow:0 8px 24px rgba(3,5,12,.5), 0 2px 6px rgba(3,5,12,.4);
-  --shadow-up:0 -8px 32px rgba(3,5,12,.6);
-  --scrim:rgba(3,5,12,.55);
-  color-scheme:dark;
+/* Tema claro opcional (menú de la obra > Tema > Claro) */
+:root[data-theme="light"]{
+  --bg:#eceff4; --panel:#f6f7fa; --panel2:#e8ebf1; --ink:#171b26; --ink2:#454c60; --ink3:#5f667b; --line:#d3d8e2;
+  --accent:#2f4fd0; --accent-ink:#ffffff; --accent-soft:rgba(47,79,208,.12); --accent-5:rgba(47,79,208,.05); --accent-line:rgba(47,79,208,.16);
+  --danger:#b8342f; --ok:#2e8a5a;
+  --roll:#fbfcfe; --roll-black:#eef0f6; --roll-scale:rgba(47,79,208,.07); --roll-root:rgba(47,79,208,.17);
+  --grid-beat:#dde1ea; --grid-bar:#aeb5c6; --grid-sub:#eceff5; --key-w:#ffffff; --key-b:#2a2f3d; --key-ink:#4a5063;
+  --c-str:#b9801a; --c-wood:#2f8f6a; --c-brass:#c4582f; --c-perc:#b84a79; --c-keys:#7b5cb8; --c-syn:#1f93a6;
+  --shadow:0 8px 24px rgba(47,79,208,.10), 0 2px 6px rgba(47,79,208,.06);
+  --shadow-up:0 -8px 32px rgba(47,79,208,.14);
+  --scrim:rgba(23,27,38,.36);
+  color-scheme:light;
 }
 *{box-sizing:border-box}
 html,body{height:100%}
@@ -116,6 +104,24 @@ h2{margin:0; font:var(--fw-2) var(--fs-1)/1 var(--ui); letter-spacing:.12em; tex
 .seg{display:inline-flex; gap:2px; padding:2px; border-radius:var(--r-sm); background:var(--panel2); border:1px solid var(--line)}
 .seg button{height:26px; padding:0 var(--s3); border:0; border-radius:6px; background:none; color:var(--ink2); font-size:var(--fs-2); transition:background-color .15s ease, color .15s ease}
 .seg button[aria-pressed="true"]{background:var(--panel); color:var(--ink); font-weight:var(--fw-2); box-shadow:0 1px 3px var(--accent-line)}
+
+/* Google Drive */
+.drive{display:grid; gap:var(--s2)}
+.drive-head{display:flex; align-items:center; justify-content:space-between; gap:var(--s2)}
+.drive-state{font-size:var(--fs-1); color:var(--ink2); text-align:right}
+.drive-state[data-s="on"]{color:var(--ok)} .drive-state[data-s="error"],.drive-state[data-s="expired"]{color:var(--danger)}
+.drive-acts{display:flex; flex-wrap:wrap; gap:var(--s2)}
+.mmenu{position:relative; padding:0; width:var(--tap)}
+@media (min-width:761px){ .drive{display:flex; align-items:center; gap:var(--s3)} .drive-head{gap:var(--s2)} }
+.cloud-dot{position:absolute; top:6px; right:6px; width:8px; height:8px; border-radius:50%; background:var(--ok); box-shadow:0 0 0 2px var(--panel)}
+.cloud-dot[data-s="pending"],.cloud-dot[data-s="saving"]{background:var(--accent)}
+.cloud-dot[data-s="error"],.cloud-dot[data-s="expired"]{background:var(--danger)}
+.works{display:grid; gap:var(--s2); max-height:50vh; overflow-y:auto}
+.wk{display:grid; grid-template-columns:minmax(0,1fr) auto auto; align-items:center; gap:var(--s2); padding:var(--s3); border:1px solid var(--line); border-radius:var(--r-md); background:var(--panel2)}
+.wk.cur{border-color:var(--accent-line); background:var(--accent-5)}
+.wk b{display:block; font-weight:var(--fw-2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.wk span{font-size:var(--fs-1); color:var(--ink3)}
+.wk .del{color:var(--danger)}
 /* Área de trabajo (escritorio) */
 .work{flex:1; min-height:0; display:grid; gap:var(--s2); grid-template-columns:232px minmax(0,1fr) 288px; grid-template-areas:"tracks stage insp"}
 .tracks{grid-area:tracks} .stage{grid-area:stage} .insp{grid-area:insp}
@@ -155,7 +161,7 @@ input[type=range]{accent-color:var(--accent); min-width:0}
 #roll.hand{touch-action:pan-x pan-y}
 .kbd{-webkit-user-select:none; -webkit-touch-callout:none; display:flex; height:96px; border-top:1px solid var(--line); background:var(--panel2); position:relative; user-select:none; touch-action:none; overflow:hidden}
 .kbd .k{position:absolute; top:0; bottom:0; border:1px solid var(--line); border-top:0; background:var(--key-w); border-radius:0 0 4px 4px}
-.kbd .k.b{background:var(--key-b); z-index:2; bottom:38%; border-color:var(--key-b)}
+.kbd .k.b{background:var(--key-b); z-index:2; bottom:38%; border-color:var(--line)}
 .kbd .k.on{background:var(--accent)}
 .kbd .k span{position:absolute; bottom:4px; left:0; right:0; text-align:center; font:var(--fs-1) var(--mono); color:var(--ink3); pointer-events:none}
 .kbd .k.b span{display:none}
@@ -282,7 +288,7 @@ input[type=range]{accent-color:var(--accent); min-width:0}
   /* Hojas inferiores: Obra, Pistas, Herramientas y Ajustes */
   .top,.tracks,.tools,.insp{
     position:fixed; left:0; right:0; bottom:0; top:auto; z-index:40; margin:0;
-    max-height:80vh; max-height:80dvh; overflow-y:auto; overscroll-behavior:contain;
+    max-height:80vh; max-height:80dvh; overflow-y:auto; overflow-x:hidden; overscroll-behavior:contain;
     border:1px solid var(--line); border-bottom:0; border-radius:var(--r-xl) var(--r-xl) 0 0; background:var(--panel);
     box-shadow:var(--shadow-up);
     padding:0 max(16px, env(safe-area-inset-right, 0px)) calc(var(--s5) + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
@@ -297,7 +303,9 @@ input[type=range]{accent-color:var(--accent); min-width:0}
   .sh-close{display:inline-block}
 
   /* Contenido de cada hoja */
-  .top{display:flex; flex-direction:column; align-items:stretch; gap:var(--s4)}
+  .top{display:flex; flex-direction:column; flex-wrap:nowrap; align-items:stretch; gap:var(--s4)}
+  .top > *{flex:none; order:3}
+  .top > .sh-head{order:0} .top > .brand{order:1} .top > #driveBox{order:2; padding:var(--s3); border:1px solid var(--line); border-radius:var(--r-md); background:var(--panel2)}
   .top .brand{flex:none}
   .top .wordmark{display:none}
   #title{font-size:var(--fs-3); border-bottom-color:var(--line); padding:var(--s2) 0}
@@ -309,6 +317,9 @@ input[type=range]{accent-color:var(--accent); min-width:0}
   .theme{flex-direction:column; align-items:stretch; gap:var(--s1)}
   .seg{display:flex}
   .seg button{flex:1; height:40px; font-size:var(--fs-2)}
+  .drive-acts .ib{flex:1 1 auto}
+  .wk{grid-template-columns:minmax(0,1fr) auto}
+  .wk .del{grid-column:1 / -1; justify-self:start}
   #bpm{width:100%}
   .top .actions #btnUndo,.top .actions #btnRedo,.top .actions .sep{display:none}
   .status{margin-left:0}
@@ -357,7 +368,7 @@ body{-webkit-text-size-adjust:100%; touch-action:manipulation}
 <body>
 <div id="app">
   <div class="mtop" aria-label="Barra principal">
-    <button id="mMenu" class="ib" data-ic="menu" aria-label="Obra: título, tempo, tonalidad, cuadrícula y archivo"></button>
+    <button id="mMenu" class="ib mmenu" aria-label="Obra: título, tempo, tonalidad, cuadrícula, archivo y Drive"><span data-ic="menu"></span><i id="cloudDot" class="cloud-dot" hidden></i></button>
     <button id="mTrack" class="mtrack" aria-label="Cambiar de pista"><i class="dot"></i><span class="nm"></span><span class="car" aria-hidden="true">▾</span></button>
     <button id="mUndo" class="ib" data-ic="undo" aria-label="Deshacer"></button>
     <button id="mRedo" class="ib" data-ic="redo" aria-label="Rehacer"></button>
@@ -388,9 +399,16 @@ body{-webkit-text-size-adjust:100%; touch-action:manipulation}
     <div class="theme" role="group" aria-labelledby="themeL">
       <span id="themeL" class="theme-l">Tema</span>
       <div class="seg">
-        <button data-theme-set="auto" aria-pressed="true">Sistema</button>
+        <button data-theme-set="dark" aria-pressed="true">Negro</button>
         <button data-theme-set="light" aria-pressed="false">Claro</button>
-        <button data-theme-set="dark" aria-pressed="false">Oscuro</button>
+      </div>
+    </div>
+    <div id="driveBox" class="drive" hidden>
+      <div class="drive-head"><span class="theme-l">Google Drive</span><span id="driveState" class="drive-state" role="status">Sin conectar</span></div>
+      <div class="drive-acts">
+        <button id="driveConnect" class="ib txt primary">Conectar</button>
+        <button id="driveWorks" class="ib txt">Mis obras</button>
+        <button id="driveNow" class="ib txt">Guardar ahora</button>
       </div>
     </div>
     <div class="actions">
@@ -404,7 +422,7 @@ body{-webkit-text-size-adjust:100%; touch-action:manipulation}
       <input id="fileIn" type="file" accept=".json,.mid,.midi,audio/midi,application/json" hidden>
     </div>
     <span id="status" class="status" role="status">Listo</span>
-    <span class="status">Versión 6 · toque corregido</span>
+    <span class="status">Versión 7 · negro y Drive</span>
   </header>
 
   <main class="work">
@@ -610,6 +628,18 @@ body{-webkit-text-size-adjust:100%; touch-action:manipulation}
     </div>
   </div>
 
+  <div id="dlgWorks" class="dlg" hidden>
+    <div class="card" role="dialog" aria-labelledby="dlgWorksT">
+      <h3 id="dlgWorksT">Mis obras en Drive</h3>
+      <p class="note-txt">Se guardan en la carpeta privada de la app en tu Google Drive, la misma que usa Mustang EB. Ábrelas en cualquier equipo donde conectes la misma cuenta.</p>
+      <div id="worksList" class="works" aria-live="polite"></div>
+      <div class="acts">
+        <button id="worksNew" class="btn">Nueva obra</button>
+        <button id="worksClose" class="btn pri">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
   <div id="dlgIntro" class="dlg" hidden>
     <div class="card" role="dialog" aria-labelledby="dlgIntroT">
       <h3 id="dlgIntroT">Bienvenido a Boceto Orquestal</h3>
@@ -689,7 +719,7 @@ function makeTrack(instId, name){
 function makeNote(t,d,p,v){ return { id:uid(), t:Math.round(t), d:Math.max(1,Math.round(d)), p, v:v||90 }; }
 
 function newProject(kind){
-  const p = { v:1, title:'Sin título', bars:16, meters:[{bar:0,n:4,d:4}], tempos:[{bar:0,bpm:96}],
+  const p = { v:1, id:uid(), updated:Date.now(), title:'Sin título', bars:16, meters:[{bar:0,n:4,d:4}], tempos:[{bar:0,bpm:96}],
     key:{root:0, scale:'major'}, markers:[], master:{vol:0.8, rev:0.28, room:2.2}, tracks:[] };
   if(kind === 'template'){
     ['fl','ob','cl','fg','hn','tp','tb','tu','tim','harp','vn1','vn2','vla','vc','cb'].forEach(i => p.tracks.push(makeTrack(i)));
@@ -704,6 +734,8 @@ function normalize(p){
   if(!p || !Array.isArray(p.tracks)) throw new Error('Proyecto no válido');
   const q = newProject('none');
   q.title = String(p.title || 'Sin título').slice(0,80);
+  q.id = (typeof p.id === 'string' && /^[a-z0-9]{6,24}$/i.test(p.id)) ? p.id : uid();
+  q.updated = +p.updated || Date.now(); if(p.demo) q.demo = true;
   q.bars = clamp(Math.round(p.bars || 16), 1, 512);
   q.meters = (Array.isArray(p.meters) && p.meters.length ? p.meters : q.meters).map(m => ({bar:Math.max(0,m.bar|0), n:clamp(m.n|0,1,32), d:[2,4,8,16].includes(m.d) ? m.d : 4}));
   q.tempos = (Array.isArray(p.tempos) && p.tempos.length ? p.tempos : q.tempos).map(m => ({bar:Math.max(0,m.bar|0), bpm:clamp(Math.round(m.bpm)||96, 20, 300)}));
@@ -789,8 +821,15 @@ const hist = { undo:[], redo:[] };
 let saveT = 0, redrawReq = false;
 function checkpoint(){ hist.undo.push(JSON.stringify(S)); if(hist.undo.length > 80) hist.undo.shift(); hist.redo.length = 0; updateUndoUI(); }
 function restore(json){ S = JSON.parse(json); if(!byId(activeId)) activeId = S.tracks[0].id; afterLoad(); }
-function undo(){ if(!hist.undo.length) return; hist.redo.push(JSON.stringify(S)); restore(hist.undo.pop()); updateUndoUI(); }
-function redo(){ if(!hist.redo.length) return; hist.undo.push(JSON.stringify(S)); restore(hist.redo.pop()); updateUndoUI(); }
+function undo(){ if(!hist.undo.length) return; hist.redo.push(JSON.stringify(S)); restore(hist.undo.pop()); updateUndoUI(); persistSoon(true); }
+function redo(){ if(!hist.redo.length) return; hist.undo.push(JSON.stringify(S)); restore(hist.redo.pop()); updateUndoUI(); persistSoon(true); }
+/* Guarda en el navegador; si la obra cambió (edit), marca la hora y avisa a la sincronización con Drive. */
+function persistSoon(edit){
+  if(edit){ S.updated = Date.now(); delete S.demo; }
+  setStatus('Guardando…'); clearTimeout(saveT);
+  saveT = setTimeout(() => { try{ localStorage.setItem(KEY, JSON.stringify(S)); setStatus('Guardado en este navegador'); }catch(e){ setStatus('Sin guardado automático'); } }, 700);
+  if(edit && window.DriveSync) window.DriveSync.schedule();
+}
 function updateUndoUI(){ ['btnUndo','mUndo'].forEach(id => { if($(id)) $(id).disabled = !hist.undo.length; }); ['btnRedo','mRedo'].forEach(id => { if($(id)) $(id).disabled = !hist.redo.length; }); }
 function setStatus(s){ $('status').textContent = s; }
 function toast(msg){ const el = $('toast'); el.textContent = msg; el.classList.add('show'); clearTimeout(toast.t); toast.t = setTimeout(() => el.classList.remove('show'), 2600); }
@@ -799,8 +838,7 @@ function touch(opts){
   rebuildTimeline(); chordDirty = true; eventsDirty = true;
   sel.forEach(id => { if(!findNote(id)) sel.delete(id); });
   requestDraw();
-  setStatus('Guardando…'); clearTimeout(saveT);
-  saveT = setTimeout(() => { try{ localStorage.setItem(KEY, JSON.stringify(S)); setStatus('Guardado en este navegador'); }catch(e){ setStatus('Sin guardado automático'); } }, 700);
+  persistSoon(true);
   refreshSelBar();
   if(opts.tracks) refreshTracks();
   if(opts.panels) refreshPanels();
@@ -1456,7 +1494,7 @@ let vw = 0, vh = 0, sx = 0, sy = 0;
 function readPalette(){
   const cs = getComputedStyle(document.documentElement), v = n => cs.getPropertyValue(n).trim();
   PAL = { roll:v('--roll'), black:v('--roll-black'), scale:v('--roll-scale'), root:v('--roll-root'), beat:v('--grid-beat'), bar:v('--grid-bar'), sub:v('--grid-sub'),
-    keyW:v('--key-w'), keyB:v('--key-b'), ink:v('--ink'), ink2:v('--ink2'), ink3:v('--ink3'), panel:v('--panel'), panel2:v('--panel2'), line:v('--line'),
+    keyW:v('--key-w'), keyB:v('--key-b'), keyInk:v('--key-ink'), ink:v('--ink'), ink2:v('--ink2'), ink3:v('--ink3'), panel:v('--panel'), panel2:v('--panel2'), line:v('--line'),
     accent:v('--accent'), soft:v('--accent-soft'), danger:v('--danger'), sec:{} };
   for(const k in SECTIONS) PAL.sec[k] = v(SECTIONS[k].v);
 }
@@ -1555,8 +1593,8 @@ function drawKeys(act, ins, nh, r0, r1){
     if(IS_BLACK[pc]){ g2.fillStyle = PAL.keyB; g2.fillRect(0, y + 1, KEYW * 0.62, V.rowH - 2); }
     if(outR){ g2.fillStyle = 'rgba(128,130,140,.38)'; g2.fillRect(0, y, KEYW, V.rowH); }
     g2.strokeStyle = PAL.line; g2.lineWidth = 1; g2.beginPath(); g2.moveTo(0, Math.round(y + V.rowH) + 0.5); g2.lineTo(KEYW, Math.round(y + V.rowH) + 0.5); g2.stroke();
-    if(kit && DRUMS[p]) txt(KEYW < 50 ? DRUMS[p].slice(0, 5) : DRUMS[p], KEYW - 4, y + V.rowH / 2 + 0.5, '#222', MONO, 'right');
-    else if(pc === 0) txt(pitchName(p), KEYW - 4, y + V.rowH / 2 + 0.5, '#444', MONO, 'right');
+    if(kit && DRUMS[p]) txt(KEYW < 50 ? DRUMS[p].slice(0, 5) : DRUMS[p], KEYW - 4, y + V.rowH / 2 + 0.5, PAL.keyInk, MONO, 'right');
+    else if(pc === 0) txt(pitchName(p), KEYW - 4, y + V.rowH / 2 + 0.5, PAL.keyInk, MONO, 'right');
   }
   g2.restore();
   g2.strokeStyle = PAL.line; g2.beginPath(); g2.moveTo(KEYW + 0.5, HDR); g2.lineTo(KEYW + 0.5, vh); g2.stroke();
@@ -1873,7 +1911,7 @@ function fillSelects(){
 }
 const meterOpts = () => METERS.map(m => h('option', { value:m[0] + '/' + m[1] }, m[0] + '/' + m[1]));
 const fx = (v, d) => (+v).toFixed(d === undefined ? 2 : d);
-function saveSoon(){ setStatus('Guardando…'); clearTimeout(saveT); saveT = setTimeout(() => { try{ localStorage.setItem(KEY, JSON.stringify(S)); setStatus('Guardado en este navegador'); }catch(e){ setStatus('Sin guardado automático'); } }, 700); }
+function saveSoon(edit){ persistSoon(edit !== false); }
 
 /* ===== Controles superiores y maestro ===== */
 function syncControls(){
@@ -2046,6 +2084,7 @@ function clearHairpins(){
 
 /* ----- Proyectos ----- */
 function loadProject(P){
+  if(window.DriveSync) window.DriveSync.flushNow();
   if(T.playing){ stopTransportNow(); finishRecording(); }
   S = normalize(P); activeId = (S.tracks.find(t => t.notes.some(n => n.t === 0) && instOf(t).h !== 0) || S.tracks[0]).id; sel.clear(); range = null; curTick = 0; V.lastDur = 48;
   if(live){ live.nodes.clear(); applyMixTo(live, S, true); setRoom(S.master.room); }
@@ -2055,10 +2094,10 @@ function afterLoad(){
   rebuildTimeline(); eventsDirty = true; chordDirty = true;
   sel.forEach(id => { if(!findNote(id)) sel.delete(id); });
   if(live){ for(const k of [...live.nodes.keys()]) if(!byId(k)) live.nodes.delete(k); applyMixTo(live, S, false); setRoom(S.master.room); }
-  syncControls(); refreshTracks(); syncInspector(); refreshPieceLists(); refreshHarmNow(); updateTransportUI(); updateRegionUI(); layout(); saveSoon(); refreshSelBar();
+  syncControls(); refreshTracks(); syncInspector(); refreshPieceLists(); refreshHarmNow(); updateTransportUI(); updateRegionUI(); layout(); saveSoon(false); refreshSelBar();
 }
 function demoProject(){
-  const P = newProject('none'); P.title = 'Ejemplo en Re menor (puedes reemplazarlo)'; P.bars = 8; P.tempos = [{ bar:0, bpm:84 }]; P.key = { root:2, scale:'minor' };
+  const P = newProject('none'); P.demo = true; P.title = 'Ejemplo en Re menor (puedes reemplazarlo)'; P.bars = 8; P.tempos = [{ bar:0, bpm:84 }]; P.key = { root:2, scale:'minor' };
   P.markers = [{ bar:0, name:'Introducción' }, { bar:4, name:'Tema' }]; P.master.rev = 0.32;
   const tk = i => { const t = makeTrack(i); P.tracks.push(t); return t; };
   const fl = tk('fl'), hn = tk('hn'), tim = tk('tim'), harp = tk('harp'), vn1 = tk('vn1'), vn2 = tk('vn2'), vla = tk('vla'), vc = tk('vc'), cb = tk('cb');
@@ -2107,7 +2146,7 @@ function buildKeys(){
 }
 function typing(e){ const t = e.target; return t && (t.tagName === 'INPUT' && t.type !== 'range' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT'); }
 document.addEventListener('keydown', e => {
-  if(typing(e) || !$('dlgNew').hidden || !$('dlgExport').hidden || !$('dlgIntro').hidden) { if(e.key === 'Escape'){ $('dlgNew').hidden = true; $('dlgExport').hidden = true; if(!$('dlgIntro').hidden) closeIntro(); } return; }
+  if(typing(e) || !$('dlgNew').hidden || !$('dlgExport').hidden || !$('dlgIntro').hidden || !$('dlgWorks').hidden) { if(e.key === 'Escape'){ $('dlgNew').hidden = true; $('dlgExport').hidden = true; $('dlgWorks').hidden = true; if(!$('dlgIntro').hidden) closeIntro(); } return; }
   const mod = e.ctrlKey || e.metaKey, k = e.key.toLowerCase();
   if(mod){
     if(k === 'z'){ e.preventDefault(); e.shiftKey ? redo() : undo(); } else if(k === 'y'){ e.preventDefault(); redo(); }
@@ -2202,18 +2241,16 @@ function showExportDone(filename){
 }
 
 /* ----- Tema: Sistema, Claro u Oscuro (se recuerda en este navegador) ----- */
-const THEME_KEY = 'boceto-orquestal-tema', HOST_THEME = document.documentElement.getAttribute('data-theme');
+const THEME_KEY = 'boceto-orquestal-tema';
 function applyTheme(mode, save){
-  const root = document.documentElement;
-  if(mode === 'light' || mode === 'dark') root.setAttribute('data-theme', mode);
-  else if(HOST_THEME) root.setAttribute('data-theme', HOST_THEME); else root.removeAttribute('data-theme');
+  mode = mode === 'light' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', mode);
   document.querySelectorAll('[data-theme-set]').forEach(b => b.setAttribute('aria-pressed', b.dataset.themeSet === mode));
-  const eff = root.getAttribute('data-theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-  const meta = document.getElementById('metaTheme'); if(meta) meta.setAttribute('content', eff === 'dark' ? '#0f1117' : '#eceff4');
+  const meta = document.getElementById('metaTheme'); if(meta) meta.setAttribute('content', mode === 'dark' ? '#000000' : '#eceff4');
   if(save){ try{ localStorage.setItem(THEME_KEY, mode); }catch(e){} }
   readPalette(); requestDraw();
 }
-function storedTheme(){ try{ const v = localStorage.getItem(THEME_KEY); return v === 'light' || v === 'dark' ? v : 'auto'; }catch(e){ return 'auto'; } }
+function storedTheme(){ try{ return localStorage.getItem(THEME_KEY) === 'light' ? 'light' : 'dark'; }catch(e){ return 'dark'; } }
 
 /* ----- Herramientas y botones ----- */
 function setTool(t){
@@ -2305,7 +2342,6 @@ function shortPos(t){ const p = posInfo(t), s = tickToSec(t), m = Math.floor(s /
 /* ----- Inicio ----- */
 function init(){
   readPalette(); fillSelects(); bindUI(); setTool('pencil'); applyTheme(storedTheme(), false);
-  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { applyTheme(storedTheme(), false); });
   new MutationObserver(() => { readPalette(); requestDraw(); }).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
   let P = null, restored = false;
   try{ const raw = localStorage.getItem(KEY); if(raw){ P = normalize(JSON.parse(raw)); restored = true; } }catch(e){ P = null; }
@@ -2318,6 +2354,193 @@ function init(){
   requestAnimationFrame(frame);
 }
 init();
+/* ===== Google Drive: la misma conexión que usa Mustang EB =====
+   Inicio de sesión con Google Identity Services (mismo Client ID, mismo origen jjzamo.github.io)
+   y archivos en la carpeta privada de la app (appDataFolder). Cada obra es un archivo boceto-<id>.json. */
+window.DriveSync = (() => {
+  const CLIENT_ID = '1078513728160-silgbu5mefei97498gung1lbavg9pcvd.apps.googleusercontent.com';
+  const SCOPE = 'https://www.googleapis.com/auth/drive.appdata';
+  const TK = 'boceto_drive_token', TE = 'boceto_drive_exp', WANT = 'boceto_drive_on', IDS = 'boceto_drive_ids';
+  const API = 'https://www.googleapis.com/drive/v3/files', UP = 'https://www.googleapis.com/upload/drive/v3/files';
+  const ls = {
+    get(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } },
+    set(k, v){ try{ localStorage.setItem(k, v); }catch(e){} },
+    del(k){ try{ localStorage.removeItem(k); }catch(e){} }
+  };
+  let token = ls.get(TK), exp = +ls.get(TE) || 0, gisReady = false, client = null;
+  let timer = 0, busy = false, again = false, state = 'off', note = '';
+  let ids = {}; try{ ids = JSON.parse(ls.get(IDS) || '{}') || {}; }catch(e){ ids = {}; }
+
+  const fileName = id => 'boceto-' + id + '.json';
+  const valid = () => !!token && Date.now() < exp - 60000;
+  const saveIds = () => ls.set(IDS, JSON.stringify(ids));
+  const hhmm = t => new Date(t).toLocaleTimeString('es-MX', { hour:'2-digit', minute:'2-digit' });
+  const when = t => new Date(t).toLocaleString('es-MX', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' });
+
+  /* ----- Estado visible ----- */
+  const LABEL = { off:'Sin conectar', on:'Conectado', pending:'Cambios por subir', saving:'Guardando en Drive…', expired:'Sesión vencida', error:'Error al guardar' };
+  function setState(s, msg){ state = s; note = msg || ''; render(); }
+  function render(){
+    const st = $('driveState'); if(!st) return;
+    st.textContent = note || LABEL[state]; st.dataset.s = state;
+    const c = $('driveConnect');
+    c.textContent = state === 'off' ? 'Conectar' : state === 'expired' ? 'Reconectar' : 'Desconectar';
+    c.classList.toggle('primary', state === 'off' || state === 'expired');
+    $('driveWorks').disabled = !valid(); $('driveNow').disabled = !valid();
+    const dot = $('cloudDot'); dot.hidden = state === 'off'; dot.dataset.s = state;
+  }
+
+  /* ----- Sesión ----- */
+  function loadGis(){
+    const s = document.createElement('script'); s.src = 'https://accounts.google.com/gsi/client'; s.async = true;
+    s.onload = () => { gisReady = true; };
+    s.onerror = () => { if(state === 'off') note = 'Sin conexión con Google'; render(); };
+    document.head.appendChild(s);
+  }
+  function connect(){
+    if(!gisReady || !window.google || !google.accounts){ toast('Cargando el inicio de sesión de Google; intenta de nuevo en unos segundos.'); return; }
+    if(!client) client = google.accounts.oauth2.initTokenClient({
+      client_id:CLIENT_ID, scope:SCOPE, callback:onToken,
+      error_callback:e => setState(ls.get(WANT) ? 'expired' : 'off', e && e.type === 'popup_closed' ? 'Conexión cancelada' : 'No se pudo conectar')
+    });
+    client.requestAccessToken({ prompt:ls.get(WANT) ? '' : 'consent' });
+  }
+  async function onToken(r){
+    if(!r || r.error){ setState(ls.get(WANT) ? 'expired' : 'off', 'No se pudo conectar'); return; }
+    token = r.access_token; exp = Date.now() + (r.expires_in || 3600) * 1000;
+    ls.set(TK, token); ls.set(TE, String(exp)); ls.set(WANT, '1');
+    setState('on'); toast('Drive conectado');
+    await reconcile(true);
+  }
+  function disconnect(){
+    try{ if(token && window.google && google.accounts) google.accounts.oauth2.revoke(token, () => {}); }catch(e){}
+    token = null; exp = 0; [TK, TE, WANT].forEach(ls.del);
+    setState('off'); toast('Drive desconectado. Tus obras siguen en Drive.');
+  }
+  function expire(){ token = null; ls.del(TK); setState('expired', 'Sesión vencida: toca Reconectar'); }
+
+  /* ----- API de Drive ----- */
+  async function api(url, opts){
+    opts = opts || {}; opts.headers = Object.assign({ Authorization:'Bearer ' + token }, opts.headers || {});
+    const r = await fetch(url, opts);
+    if(r.status === 401){ expire(); throw new Error('expired'); }
+    if(!r.ok){ const e = new Error('Drive respondió ' + r.status); e.status = r.status; throw e; }
+    return r;
+  }
+  async function list(){
+    const q = encodeURIComponent("name contains 'boceto-' and trashed = false");
+    const r = await api(API + '?spaces=appDataFolder&pageSize=200&orderBy=modifiedTime%20desc&fields=files(id,name,modifiedTime,appProperties)&q=' + q);
+    const files = ((await r.json()).files || []).map(f => {
+      const m = /^boceto-(.+)\.json$/.exec(f.name) || [], ap = f.appProperties || {};
+      return { fileId:f.id, id:m[1], title:ap.title || 'Sin título', updated:+ap.updated || Date.parse(f.modifiedTime) };
+    }).filter(f => f.id);
+    files.forEach(f => { ids[f.id] = f.fileId; }); saveIds();
+    return files.sort((a, b) => b.updated - a.updated);
+  }
+  async function download(fileId){ const r = await api(API + '/' + fileId + '?alt=media'); return normalize(await r.json()); }
+  async function findFile(id){
+    const q = encodeURIComponent("name = '" + fileName(id) + "' and trashed = false");
+    const r = await api(API + '?spaces=appDataFolder&fields=files(id)&q=' + q), f = ((await r.json()).files || [])[0];
+    if(f){ ids[id] = f.id; saveIds(); } return f ? f.id : null;
+  }
+  async function upload(P){
+    const meta = { name:fileName(P.id), mimeType:'application/json', appProperties:{ title:String(P.title || 'Sin título').slice(0, 100), updated:String(P.updated || Date.now()) } };
+    const b = 'boceto' + Math.random().toString(36).slice(2);
+    const body = m => '--' + b + '\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n' + JSON.stringify(m) + '\r\n--' + b + '\r\nContent-Type: application/json\r\n\r\n' + JSON.stringify(P) + '\r\n--' + b + '--';
+    const headers = { 'Content-Type':'multipart/related; boundary=' + b };
+    let fileId = ids[P.id] || await findFile(P.id);
+    if(fileId){
+      try{ await api(UP + '/' + fileId + '?uploadType=multipart&fields=id', { method:'PATCH', headers, body:body({ appProperties:meta.appProperties }) }); return; }
+      catch(e){ if(e.status !== 404) throw e; delete ids[P.id]; saveIds(); }
+    }
+    const r = await api(UP + '?uploadType=multipart&fields=id', { method:'POST', headers, body:body(Object.assign({ parents:['appDataFolder'] }, meta)) });
+    ids[P.id] = (await r.json()).id; saveIds();
+  }
+
+  /* ----- Sincronización ----- */
+  function schedule(){
+    if(!valid()){ if(ls.get(WANT)) expire(); return; }
+    clearTimeout(timer); setState('pending'); timer = setTimeout(() => push(), 2500);
+  }
+  async function push(snapshot){
+    if(!valid()) return;
+    const P = snapshot || JSON.parse(JSON.stringify(S));
+    if(P.demo) return;
+    if(busy){ again = true; return; }
+    busy = true; setState('saving');
+    try{ await upload(P); setState('on', 'Guardado en Drive a las ' + hhmm(Date.now())); setStatus('Guardado en Drive'); }
+    catch(e){ if(e.message !== 'expired') setState('error', 'No se pudo guardar en Drive; se reintentará con el próximo cambio'); }
+    busy = false;
+    if(again){ again = false; push(); }
+  }
+  function flushNow(){ if(!valid() || state !== 'pending') return; clearTimeout(timer); push(JSON.parse(JSON.stringify(S))); }
+
+  /* Al conectar o volver a la app: abre lo más reciente de Drive o sube lo local si es más nuevo. */
+  async function reconcile(fromConnect){
+    if(!valid()) return;
+    try{
+      const files = await list(), mine = files.find(f => f.id === S.id), local = S.updated || 0;
+      if(S.demo){
+        if(files.length){ const P = await download(files[0].fileId); checkpoint(); loadProject(P); toast('Abrí tu obra más reciente de Drive: ' + P.title); }
+        setState('on', files.length ? 'Al día con Drive' : 'Conectado; tu primera obra se guardará al editar');
+        return;
+      }
+      if(mine && mine.updated > local + 1000){
+        const P = await download(mine.fileId); checkpoint(); loadProject(P); toast('Cargué la versión más reciente desde Drive');
+        setState('on', 'Al día con Drive');
+      } else if(!mine || local > mine.updated + 1000){
+        await push();
+        if(fromConnect && files.filter(f => f.id !== S.id).length) toast('Tienes ' + files.length + ' obras en Drive. Ábrelas en Mis obras.');
+      } else setState('on', 'Al día con Drive');
+    }catch(e){ if(e.message !== 'expired') setState('error', 'No se pudo leer Drive'); }
+  }
+
+  /* ----- Mis obras ----- */
+  async function openWorks(){
+    const box = $('worksList'); closeSheet(); $('dlgWorks').hidden = false;
+    if(!valid()){ box.replaceChildren(h('p', { class:'note-txt' }, 'Conecta Google Drive desde el menú de la obra para ver tus obras.')); return; }
+    box.replaceChildren(h('p', { class:'note-txt' }, 'Cargando tus obras…'));
+    try{
+      if(state === 'pending') await push();
+      const files = await list(); box.replaceChildren();
+      if(!files.length){ box.append(h('p', { class:'note-txt' }, 'Aún no hay obras en Drive. La obra abierta se sube sola en cuanto la edites.')); return; }
+      files.forEach(f => {
+        const cur = f.id === S.id;
+        const del = h('button', { class:'ib txt del' }, 'Eliminar');
+        del.onclick = async () => {
+          if(del.dataset.armed !== '1'){ del.dataset.armed = '1'; del.textContent = 'Confirmar'; setTimeout(() => { del.dataset.armed = ''; del.textContent = 'Eliminar'; }, 4000); return; }
+          try{ await api(API + '/' + f.fileId, { method:'DELETE' }); delete ids[f.id]; saveIds(); toast('Obra eliminada de Drive'); openWorks(); }
+          catch(e){ toast('No se pudo eliminar'); }
+        };
+        const open = h('button', { class:'ib txt' + (cur ? '' : ' primary'), disabled:cur }, cur ? 'Abierta' : 'Abrir');
+        open.onclick = async () => {
+          open.disabled = true; open.textContent = 'Abriendo…';
+          try{ const P = await download(f.fileId); checkpoint(); loadProject(P); $('dlgWorks').hidden = true; toast('Obra abierta: ' + P.title); }
+          catch(e){ open.disabled = false; open.textContent = 'Abrir'; toast('No se pudo abrir la obra'); }
+        };
+        box.append(h('div', { class:'wk' + (cur ? ' cur' : '') }, h('div', { style:'min-width:0' }, h('b', {}, f.title), h('span', {}, 'Editada ' + when(f.updated))), open, del));
+      });
+    }catch(e){ if(e.message !== 'expired') box.replaceChildren(h('p', { class:'note-txt' }, 'No se pudo leer Drive. Revisa tu conexión e intenta de nuevo.')); else box.replaceChildren(h('p', { class:'note-txt' }, 'La sesión venció. Toca Reconectar en el menú de la obra.')); }
+  }
+
+  function init(){
+    $('driveBox').hidden = false;
+    $('driveConnect').onclick = () => { if(state === 'off' || state === 'expired') connect(); else disconnect(); };
+    $('driveWorks').onclick = openWorks;
+    $('driveNow').onclick = () => { clearTimeout(timer); push(); };
+    $('worksClose').onclick = () => { $('dlgWorks').hidden = true; };
+    $('worksNew').onclick = () => { $('dlgWorks').hidden = true; $('dlgNew').hidden = false; };
+    document.addEventListener('visibilitychange', () => { if(document.hidden) flushNow(); else reconcile(false); });
+    window.addEventListener('pagehide', flushNow);
+    loadGis();
+    if(valid()){ setState('on'); reconcile(false); }
+    else if(ls.get(WANT)) setState('expired', 'Sesión vencida: toca Reconectar');
+    else setState('off');
+  }
+  return { init, schedule, flushNow, connected:valid };
+})();
+
+DriveSync.init();
 
 if('serviceWorker' in navigator && location.protocol === 'https:'){ window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => {}); }); }
 
