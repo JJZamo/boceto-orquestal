@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Boceto Orquestal</title>
 <meta name="description" content="Boceteador orquestal con piano roll, pistas ilimitadas, mezclador y exportación a MIDI y WAV.">
-<meta name="theme-color" content="#12141c">
+<meta name="theme-color" id="metaTheme" content="#eceff4">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Boceto">
@@ -109,6 +109,13 @@ h2{margin:0; font:var(--fw-2) var(--fs-1)/1 var(--ui); letter-spacing:.12em; tex
 .ib:disabled{opacity:.4; cursor:default; transform:none}
 .sep{width:1px; height:20px; background:var(--line); margin:0 var(--s1)}
 .status{font-size:var(--fs-1); color:var(--ink3); margin-left:auto; white-space:nowrap}
+
+/* Selector de tema */
+.theme{display:flex; align-items:center; gap:var(--s2)}
+.theme-l{color:var(--ink3); font-size:var(--fs-1); text-transform:uppercase; letter-spacing:.08em}
+.seg{display:inline-flex; gap:2px; padding:2px; border-radius:var(--r-sm); background:var(--panel2); border:1px solid var(--line)}
+.seg button{height:26px; padding:0 var(--s3); border:0; border-radius:6px; background:none; color:var(--ink2); font-size:var(--fs-2); transition:background-color .15s ease, color .15s ease}
+.seg button[aria-pressed="true"]{background:var(--panel); color:var(--ink); font-weight:var(--fw-2); box-shadow:0 1px 3px var(--accent-line)}
 /* Área de trabajo (escritorio) */
 .work{flex:1; min-height:0; display:grid; gap:var(--s2); grid-template-columns:232px minmax(0,1fr) 288px; grid-template-areas:"tracks stage insp"}
 .tracks{grid-area:tracks} .stage{grid-area:stage} .insp{grid-area:insp}
@@ -304,6 +311,9 @@ input[type=range]{accent-color:var(--accent); min-width:0}
   .top .fields label{flex-direction:column; align-items:stretch; gap:var(--s1)}
   .top .fields label[for="keyRoot"]{grid-column:1 / -1}
   .top .fields select,.top .fields input{width:100%}
+  .theme{flex-direction:column; align-items:stretch; gap:var(--s1)}
+  .seg{display:flex}
+  .seg button{flex:1; height:40px; font-size:var(--fs-2)}
   #bpm{width:100%}
   .top .actions #btnUndo,.top .actions #btnRedo,.top .actions .sep{display:none}
   .status{margin-left:0}
@@ -337,6 +347,13 @@ input[type=range]{accent-color:var(--accent); min-width:0}
 @media (max-width:760px) and (prefers-reduced-motion:reduce){ .top,.tracks,.tools,.insp{transition:none} }
 @media (prefers-reduced-motion:reduce){ #toast,.meter i,.ib,.btn{transition:none} .done-ic,.endcard{animation:none} }
 
+/* Ajustes para iPhone: el dock llega al borde inferior y su relleno cubre la barra de inicio */
+@media (max-width:760px){
+  :root{padding-bottom:0}
+  .mdock{margin-bottom:0; border-bottom:0; border-radius:var(--r-lg) var(--r-lg) 0 0; padding-bottom:calc(var(--s1) + env(safe-area-inset-bottom, 0px))}
+}
+/* App instalada: margen extra bajo la barra de estado para que nada quede bajo su difuminado */
+@media (display-mode: standalone) and (max-width:760px){ body{padding-top:var(--s4)} }
 /* Ajustes para iPhone */
 body{-webkit-text-size-adjust:100%; touch-action:manipulation}
 @media (pointer:coarse){ input,select{font-size:16px !important} .ib,.btn{min-height:36px} }
@@ -373,6 +390,14 @@ body{-webkit-text-size-adjust:100%; touch-action:manipulation}
       <label for="keyRoot">Tonalidad <select id="keyRoot"></select><select id="keyScale" aria-label="Escala"></select></label>
       <label for="snap">Cuadrícula <select id="snap"></select></label>
     </div>
+    <div class="theme" role="group" aria-labelledby="themeL">
+      <span id="themeL" class="theme-l">Tema</span>
+      <div class="seg">
+        <button data-theme-set="auto" aria-pressed="true">Sistema</button>
+        <button data-theme-set="light" aria-pressed="false">Claro</button>
+        <button data-theme-set="dark" aria-pressed="false">Oscuro</button>
+      </div>
+    </div>
     <div class="actions">
       <button id="btnUndo" class="ib" data-ic="undo" title="Deshacer (Ctrl+Z)" aria-label="Deshacer"></button>
       <button id="btnRedo" class="ib" data-ic="redo" title="Rehacer (Ctrl+Y)" aria-label="Rehacer"></button>
@@ -384,7 +409,7 @@ body{-webkit-text-size-adjust:100%; touch-action:manipulation}
       <input id="fileIn" type="file" accept=".json,.mid,.midi,audio/midi,application/json" hidden>
     </div>
     <span id="status" class="status" role="status">Listo</span>
-    <span class="status">Versión 4 · diseño renovado</span>
+    <span class="status">Versión 5 · tema y posición</span>
   </header>
 
   <main class="work">
@@ -2180,6 +2205,20 @@ function showExportDone(filename){
   const d = $('exDone'); d.hidden = true; void d.offsetWidth; d.hidden = false;
 }
 
+/* ----- Tema: Sistema, Claro u Oscuro (se recuerda en este navegador) ----- */
+const THEME_KEY = 'boceto-orquestal-tema', HOST_THEME = document.documentElement.getAttribute('data-theme');
+function applyTheme(mode, save){
+  const root = document.documentElement;
+  if(mode === 'light' || mode === 'dark') root.setAttribute('data-theme', mode);
+  else if(HOST_THEME) root.setAttribute('data-theme', HOST_THEME); else root.removeAttribute('data-theme');
+  document.querySelectorAll('[data-theme-set]').forEach(b => b.setAttribute('aria-pressed', b.dataset.themeSet === mode));
+  const eff = root.getAttribute('data-theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  const meta = document.getElementById('metaTheme'); if(meta) meta.setAttribute('content', eff === 'dark' ? '#0f1117' : '#eceff4');
+  if(save){ try{ localStorage.setItem(THEME_KEY, mode); }catch(e){} }
+  readPalette(); requestDraw();
+}
+function storedTheme(){ try{ const v = localStorage.getItem(THEME_KEY); return v === 'light' || v === 'dark' ? v : 'auto'; }catch(e){ return 'auto'; } }
+
 /* ----- Herramientas y botones ----- */
 function setTool(t){
   V.tool = t; document.querySelectorAll('[data-tool]').forEach(b => b.setAttribute('aria-pressed', b.dataset.tool === t)); cv.classList.toggle('hand', t === 'hand'); cv.style.cursor = t === 'hand' ? 'grab' : 'default';
@@ -2192,6 +2231,7 @@ function bindUI(){
   document.querySelectorAll('[data-tool]').forEach(b => b.addEventListener('click', () => setTool(b.dataset.tool)));
   document.querySelectorAll('[data-tab]').forEach(b => b.addEventListener('click', () => showTab(b.dataset.tab)));
   $('btnPlay').onclick = togglePlay; $('btnStop').onclick = stopAll; $('btnStart').onclick = goStart;
+  document.querySelectorAll('[data-theme-set]').forEach(b => b.addEventListener('click', () => applyTheme(b.dataset.themeSet, true)));
   $('mPlay').onclick = togglePlay; $('mStart').onclick = goStart; $('mRec').onclick = () => $('btnRec').click();
   $('mUndo').onclick = undo; $('mRedo').onclick = redo;
   $('mMenu').onclick = () => openSheet('top'); $('mLoop').onclick = () => $('btnLoop').click(); $('mTrack').onclick = () => openSheet('tracks');
@@ -2268,8 +2308,8 @@ function shortPos(t){ const p = posInfo(t), s = tickToSec(t), m = Math.floor(s /
 
 /* ----- Inicio ----- */
 function init(){
-  readPalette(); fillSelects(); bindUI(); setTool('pencil');
-  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { readPalette(); requestDraw(); });
+  readPalette(); fillSelects(); bindUI(); setTool('pencil'); applyTheme(storedTheme(), false);
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { applyTheme(storedTheme(), false); });
   new MutationObserver(() => { readPalette(); requestDraw(); }).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
   let P = null, restored = false;
   try{ const raw = localStorage.getItem(KEY); if(raw){ P = normalize(JSON.parse(raw)); restored = true; } }catch(e){ P = null; }
