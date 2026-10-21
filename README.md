@@ -28,14 +28,16 @@ Consejos para el iPhone: sube el volumen y desactiva el modo silencio para oír 
 
 ## Uso en el teléfono
 
-- **Arriba:** menú de la obra (título, tempo, compás, tonalidad, cuadrícula, bucle, archivo), pista activa y transporte. El botón ⏮ vuelve al inicio; si está sonando, empieza de nuevo desde ahí.
-- **Abajo:** Lápiz, Selección, Borrar, Edición (copiar, transponer, dinámicas, vista) y Ajustes (pista, armonía, pieza).
+- **Arriba:** menú de la obra (título, tempo, compás, tonalidad, cuadrícula, archivo y guía), pista activa, deshacer y rehacer.
+- **Abajo, junto al pulgar:** posición, volver al inicio (si está sonando, empieza de nuevo), reproducir, grabar y bucle.
+- **Herramientas:** Lápiz, Selección, Borrar, Edición (copiar, transponer, dinámicas, vista) y Ajustes (pista, armonía, pieza).
 - **Gestos en el piano roll:**
   - Un dedo dibuja, mueve y alarga notas.
   - Dos dedos desplazan la vista; pellizca para acercar o alejar.
   - Toque largo sobre una nota la agrega a la selección.
   - Doble toque sobre una nota la borra.
 - Con notas seleccionadas aparece una barra con -8va, -1, +1, +8va, Duplicar y Borrar.
+- Al terminar la obra aparece una tarjeta con **Escuchar de nuevo**. La guía inicial se puede volver a abrir desde el menú, en **Guía**.
 
 ## Archivos
 

@@ -13,228 +13,295 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Newsreader:ital,wght@0,500;1,500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap">
 <style>
 :root{color-scheme:light; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px)}
 body{margin:0; font:14px system-ui,sans-serif}
 img{max-width:100%}
 [hidden]{display:none!important}
-/* Layout: barra superior, pistas a la izquierda, piano roll al centro, inspector a la derecha. */
+/* Layout: barra superior, pistas a la izquierda, piano roll al centro, inspector a la derecha; en teléfono, piano roll a pantalla completa con barras y hojas inferiores. */
 :root{
-  --bg:#eceff4; --panel:#f6f7fa; --panel2:#e6e9f0; --ink:#171b26; --ink2:#454c60; --ink3:#767d93; --line:#d0d5e0;
-  --accent:#2f4fd0; --accent-ink:#ffffff; --accent-soft:rgba(47,79,208,.12);
+  /* Color 60/30/10: neutros de base, tinta para el texto, acento solo para acciones y estado activo */
+  --bg:#eceff4; --panel:#f6f7fa; --panel2:#e8ebf1; --ink:#171b26; --ink2:#454c60; --ink3:#5f667b; --line:#d3d8e2;
+  --accent:#2f4fd0; --accent-ink:#ffffff; --accent-soft:rgba(47,79,208,.12); --accent-5:rgba(47,79,208,.05); --accent-line:rgba(47,79,208,.16);
   --danger:#b8342f; --ok:#2e8a5a;
   --roll:#fbfcfe; --roll-black:#eef0f6; --roll-scale:rgba(47,79,208,.07); --roll-root:rgba(47,79,208,.17);
   --grid-beat:#dde1ea; --grid-bar:#aeb5c6; --grid-sub:#eceff5; --key-w:#ffffff; --key-b:#2a2f3d;
   --c-str:#b9801a; --c-wood:#2f8f6a; --c-brass:#c4582f; --c-perc:#b84a79; --c-keys:#7b5cb8; --c-syn:#1f93a6;
+  --shadow:0 8px 24px rgba(47,79,208,.10), 0 2px 6px rgba(47,79,208,.06);
+  --shadow-up:0 -8px 32px rgba(47,79,208,.14);
+  --scrim:rgba(23,27,38,.36);
+
+  /* Tipografía: una familia (Plex Sans, con su variante mono para cifras), 4 tamaños y 2 pesos */
   --ui:'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
   --mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
-  --display:'Newsreader',Georgia,serif;
+  --fs-1:11px; --fs-2:13px; --fs-3:16px; --fs-4:20px;
+  --fw-1:400; --fw-2:500;
+
+  /* Espaciado en cuadrícula de 4 y 8 puntos */
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px; --s6:32px;
+  --r-sm:8px; --r-md:12px; --r-lg:16px; --r-xl:24px;
+  --ctl:32px; --tap:44px;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --bg:#0f1117; --panel:#171a23; --panel2:#20242f; --ink:#e9ebf3; --ink2:#a9b0c4; --ink3:#727a90; --line:#2b303f;
-    --accent:#8aa2ff; --accent-ink:#0b1030; --accent-soft:rgba(138,162,255,.16);
+    --bg:#0f1117; --panel:#171a23; --panel2:#20242f; --ink:#e9ebf3; --ink2:#b3b9cc; --ink3:#8d95ab; --line:#2b303f;
+    --accent:#8aa2ff; --accent-ink:#0b1030; --accent-soft:rgba(138,162,255,.16); --accent-5:rgba(138,162,255,.06); --accent-line:rgba(138,162,255,.18);
     --danger:#ff7a72; --ok:#5ccf93;
     --roll:#12141c; --roll-black:#0e1017; --roll-scale:rgba(138,162,255,.07); --roll-root:rgba(138,162,255,.18);
     --grid-beat:#222735; --grid-bar:#3a4157; --grid-sub:#181c27; --key-w:#dfe3ee; --key-b:#1b1f2b;
     --c-str:#e0a63f; --c-wood:#4fc397; --c-brass:#ee7d51; --c-perc:#e06f9f; --c-keys:#a58ae6; --c-syn:#42c1d6;
+    --shadow:0 8px 24px rgba(3,5,12,.5), 0 2px 6px rgba(3,5,12,.4);
+    --shadow-up:0 -8px 32px rgba(3,5,12,.6);
+    --scrim:rgba(3,5,12,.55);
     color-scheme:dark;
   }
 }
 :root[data-theme="dark"]{
-  --bg:#0f1117; --panel:#171a23; --panel2:#20242f; --ink:#e9ebf3; --ink2:#a9b0c4; --ink3:#727a90; --line:#2b303f;
-  --accent:#8aa2ff; --accent-ink:#0b1030; --accent-soft:rgba(138,162,255,.16);
+  --bg:#0f1117; --panel:#171a23; --panel2:#20242f; --ink:#e9ebf3; --ink2:#b3b9cc; --ink3:#8d95ab; --line:#2b303f;
+  --accent:#8aa2ff; --accent-ink:#0b1030; --accent-soft:rgba(138,162,255,.16); --accent-5:rgba(138,162,255,.06); --accent-line:rgba(138,162,255,.18);
   --danger:#ff7a72; --ok:#5ccf93;
   --roll:#12141c; --roll-black:#0e1017; --roll-scale:rgba(138,162,255,.07); --roll-root:rgba(138,162,255,.18);
   --grid-beat:#222735; --grid-bar:#3a4157; --grid-sub:#181c27; --key-w:#dfe3ee; --key-b:#1b1f2b;
   --c-str:#e0a63f; --c-wood:#4fc397; --c-brass:#ee7d51; --c-perc:#e06f9f; --c-keys:#a58ae6; --c-syn:#42c1d6;
+  --shadow:0 8px 24px rgba(3,5,12,.5), 0 2px 6px rgba(3,5,12,.4);
+  --shadow-up:0 -8px 32px rgba(3,5,12,.6);
+  --scrim:rgba(3,5,12,.55);
   color-scheme:dark;
 }
 *{box-sizing:border-box}
 html,body{height:100%}
 body{
-  background:var(--bg); color:var(--ink); font:13px/1.4 var(--ui);
+  background:var(--bg); color:var(--ink); font:var(--fw-1) var(--fs-2)/1.45 var(--ui);
   padding-left:max(16px, env(safe-area-inset-left, 0px));
   padding-right:max(16px, env(safe-area-inset-right, 0px));
-  padding-block:10px; display:flex; flex-direction:column; overflow-x:hidden;
+  padding-block:var(--s3); display:flex; flex-direction:column; overflow-x:hidden;
 }
-#app{flex:1; min-height:620px; min-width:0; display:flex; flex-direction:column; gap:8px}
+#app{flex:1; min-height:620px; min-width:0; display:flex; flex-direction:column; gap:var(--s2)}
 button,input,select{font:inherit; color:inherit}
-button{cursor:pointer}
+button{cursor:pointer; -webkit-tap-highlight-color:transparent}
 :focus-visible{outline:2px solid var(--accent); outline-offset:1px}
-h2{margin:0; font:500 11px/1 var(--ui); letter-spacing:.12em; text-transform:uppercase; color:var(--ink3)}
+h2{margin:0; font:var(--fw-2) var(--fs-1)/1 var(--ui); letter-spacing:.12em; text-transform:uppercase; color:var(--ink3)}
 .mono{font-family:var(--mono); font-variant-numeric:tabular-nums}
 
-/* Barra superior */
-.top{display:flex; flex-wrap:wrap; align-items:center; gap:8px 16px; padding:8px 10px; background:var(--panel); border:1px solid var(--line); border-radius:8px}
-.brand{display:flex; align-items:baseline; gap:10px; min-width:0; flex:1 1 260px}
-.wordmark{font:italic 500 21px/1 var(--display); letter-spacing:.01em; white-space:nowrap}
-#title{min-width:0; flex:1; background:transparent; border:0; border-bottom:1px solid transparent; padding:2px 0; font-weight:500}
+/* Barra superior (escritorio) */
+.top{display:flex; flex-wrap:wrap; align-items:center; gap:var(--s2) var(--s4); padding:var(--s2) var(--s3); background:var(--panel); border:1px solid var(--line); border-radius:var(--r-md)}
+.brand{display:flex; align-items:baseline; gap:var(--s3); min-width:0; flex:1 1 260px}
+.wordmark{font:var(--fw-2) var(--fs-4)/1 var(--ui); letter-spacing:-.01em; white-space:nowrap}
+#title{min-width:0; flex:1; background:transparent; border:0; border-bottom:1px solid transparent; padding:2px 0; font-weight:var(--fw-2)}
 #title:hover,#title:focus{border-bottom-color:var(--line)}
-.transport,.fields,.actions{display:flex; flex-wrap:wrap; align-items:center; gap:6px}
-.fields{gap:6px 12px}
-.fields label{display:flex; align-items:center; gap:6px; color:var(--ink3); font-size:11px; text-transform:uppercase; letter-spacing:.08em}
+.transport,.fields,.actions{display:flex; flex-wrap:wrap; align-items:center; gap:var(--s2)}
+.fields{gap:var(--s2) var(--s3)}
+.fields label{display:flex; align-items:center; gap:var(--s2); color:var(--ink3); font-size:var(--fs-1); text-transform:uppercase; letter-spacing:.08em}
 .fields input,.fields select,.insp select,.insp input[type=text],.insp input[type=number],.tools select{
-  background:var(--panel2); border:1px solid var(--line); border-radius:5px; padding:4px 6px; color:var(--ink); text-transform:none; letter-spacing:0; font-size:12px; min-width:0
+  height:var(--ctl); background:var(--panel2); border:1px solid var(--line); border-radius:var(--r-sm); padding:0 var(--s2); color:var(--ink); text-transform:none; letter-spacing:0; font-size:var(--fs-2); min-width:0
 }
-#bpm{width:58px}
-.pos{padding:5px 10px; background:var(--panel2); border:1px solid var(--line); border-radius:5px; font-size:12px; min-width:150px; text-align:center; color:var(--ink)}
-.ib{display:inline-flex; align-items:center; justify-content:center; gap:6px; min-width:32px; height:30px; padding:0 9px; border-radius:6px; border:1px solid var(--line); background:var(--panel2); color:var(--ink)}
+#bpm{width:64px}
+.pos{height:var(--ctl); display:inline-flex; align-items:center; padding:0 var(--s3); background:var(--panel2); border:1px solid var(--line); border-radius:var(--r-sm); font-size:var(--fs-2); min-width:152px; justify-content:center; color:var(--ink)}
+.ib{display:inline-flex; align-items:center; justify-content:center; gap:var(--s2); min-width:var(--ctl); height:var(--ctl); padding:0 var(--s3); border-radius:var(--r-sm); border:1px solid var(--accent-line); background:var(--accent-5); color:var(--ink); font-size:var(--fs-2); transition:transform .08s ease, background-color .15s ease, border-color .15s ease}
 .ib:hover{border-color:var(--ink3)}
-.ib svg{width:15px; height:15px; fill:currentColor; flex:none}
+.ib:active,.btn:active{transform:scale(.96)}
+.ib svg{width:16px; height:16px; fill:currentColor; flex:none}
+.ib[data-ic]{padding:0}
 .ib[aria-pressed="true"],.ib.on{background:var(--accent-soft); border-color:var(--accent); color:var(--accent)}
-.ib.primary{background:var(--accent); color:var(--accent-ink); border-color:var(--accent)}
+.ib.primary{background:var(--accent); color:var(--accent-ink); border-color:var(--accent); box-shadow:inset 0 1px 0 rgba(255,255,255,.28), 0 2px 8px var(--accent-line)}
 .ib.rec[aria-pressed="true"]{background:var(--danger); border-color:var(--danger); color:#fff}
-.ib:disabled{opacity:.4; cursor:default}
-.ib.txt{font-size:12px}
-.sep{width:1px; height:20px; background:var(--line); margin:0 2px}
-.status{font-size:11px; color:var(--ink3); margin-left:auto; white-space:nowrap}
-/* Área de trabajo */
-.work{flex:1; min-height:0; display:grid; gap:8px; grid-template-columns:232px minmax(0,1fr) 284px; grid-template-areas:"tracks stage insp"}
+.ib:disabled{opacity:.4; cursor:default; transform:none}
+.sep{width:1px; height:20px; background:var(--line); margin:0 var(--s1)}
+.status{font-size:var(--fs-1); color:var(--ink3); margin-left:auto; white-space:nowrap}
+/* Área de trabajo (escritorio) */
+.work{flex:1; min-height:0; display:grid; gap:var(--s2); grid-template-columns:232px minmax(0,1fr) 288px; grid-template-areas:"tracks stage insp"}
 .tracks{grid-area:tracks} .stage{grid-area:stage} .insp{grid-area:insp}
-.tracks,.insp,.stage{min-width:0; min-height:0; background:var(--panel); border:1px solid var(--line); border-radius:8px; display:flex; flex-direction:column}
-.pane-head{display:flex; align-items:center; gap:6px; padding:8px 10px; border-bottom:1px solid var(--line)}
+.tracks,.insp,.stage{min-width:0; min-height:0; background:var(--panel); border:1px solid var(--line); border-radius:var(--r-md); display:flex; flex-direction:column}
+.pane-head{display:flex; align-items:center; gap:var(--s2); padding:var(--s2) var(--s3); border-bottom:1px solid var(--line)}
 .pane-head h2{margin-right:auto}
 #trackList{flex:1; min-height:0; overflow-y:auto; overscroll-behavior:contain}
-.sec-label{padding:6px 10px 4px; font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink3); background:var(--panel2); border-bottom:1px solid var(--line); position:sticky; top:0; z-index:1}
-.trk{display:grid; grid-template-columns:6px minmax(0,1fr) auto; align-items:center; gap:0 8px; padding:6px 8px 6px 0; border-bottom:1px solid var(--line); cursor:pointer}
+.sec-label{padding:var(--s2) var(--s3) var(--s1); font-size:var(--fs-1); letter-spacing:.12em; text-transform:uppercase; color:var(--ink3); background:var(--panel2); border-bottom:1px solid var(--line); position:sticky; top:0; z-index:1}
+.trk{display:grid; grid-template-columns:4px minmax(0,1fr) auto; align-items:center; gap:0 var(--s2); padding:var(--s2) var(--s2) var(--s2) 0; border-bottom:1px solid var(--line); cursor:pointer}
 .trk:hover{background:var(--panel2)}
 .trk.sel{background:var(--accent-soft)}
-.trk .bar{align-self:stretch; border-radius:0 3px 3px 0}
-.trk .nm{font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
-.trk .sub{font-size:11px; color:var(--ink3); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
-.trk .btns{display:flex; gap:3px}
-.trk .mini{width:24px; height:22px; border-radius:4px; border:1px solid var(--line); background:var(--panel2); font:500 11px var(--ui); padding:0}
+.trk .bar{align-self:stretch; border-radius:0 2px 2px 0}
+.trk .nm{font-weight:var(--fw-2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.trk .sub{font-size:var(--fs-1); color:var(--ink3); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.trk .btns{display:flex; gap:var(--s1)}
+.trk .mini{width:28px; height:24px; border-radius:6px; border:1px solid var(--accent-line); background:var(--accent-5); font:var(--fw-2) var(--fs-1) var(--ui); padding:0}
 .trk .mini[aria-pressed="true"].m{background:var(--danger); color:#fff; border-color:var(--danger)}
 .trk .mini[aria-pressed="true"].s{background:var(--accent); color:var(--accent-ink); border-color:var(--accent)}
-.trk input[type=range]{grid-column:2 / 4; width:100%; margin:4px 0 0; accent-color:var(--accent); height:14px}
+.trk input[type=range]{grid-column:2 / 4; width:100%; margin:var(--s1) 0 0; accent-color:var(--accent); height:16px}
 .trk.muted .nm,.trk.muted .sub{opacity:.45}
-.master{border-top:1px solid var(--line); padding:8px 10px; display:grid; gap:6px}
-.row{display:grid; grid-template-columns:62px minmax(0,1fr) 38px; align-items:center; gap:8px; font-size:12px}
+.master{border-top:1px solid var(--line); padding:var(--s2) var(--s3); display:grid; gap:var(--s2)}
+.row{display:grid; grid-template-columns:64px minmax(0,1fr) 44px; align-items:center; gap:var(--s2); font-size:var(--fs-2)}
 .row label{color:var(--ink2)}
-.row output{font-family:var(--mono); font-size:11px; color:var(--ink3); text-align:right}
+.row output{font-family:var(--mono); font-size:var(--fs-1); color:var(--ink3); text-align:right; white-space:nowrap}
 input[type=range]{accent-color:var(--accent); min-width:0}
-.meter{height:5px; border-radius:3px; background:var(--panel2); overflow:hidden}
+.meter{height:4px; border-radius:2px; background:var(--panel2); overflow:hidden}
 .meter i{display:block; height:100%; width:0; background:var(--ok); transition:width .06s linear}
 
 /* Escenario */
-.tools{display:flex; flex-wrap:wrap; align-items:center; gap:6px; padding:7px 8px; border-bottom:1px solid var(--line)}
-.tools .grp{display:flex; gap:3px; align-items:center}
-.tools .tip{font-size:11px; color:var(--ink3); margin-left:auto}
-.roll-wrap{flex:1; min-height:300px; position:relative; background:var(--roll); border-radius:0 0 8px 8px; overflow:hidden}
+.tools{display:flex; flex-wrap:wrap; align-items:center; gap:var(--s2); padding:var(--s2); border-bottom:1px solid var(--line)}
+.tools .grp{display:flex; gap:var(--s1); align-items:center}
+.tools .tip{font-size:var(--fs-1); color:var(--ink3); margin-left:auto}
+.roll-wrap{flex:1; min-height:300px; position:relative; background:var(--roll); border-radius:0 0 var(--r-md) var(--r-md); overflow:hidden}
 .scroller{position:absolute; inset:0; overflow:auto; overscroll-behavior:contain}
 .sizer{position:relative}
 #roll{position:sticky; top:0; left:0; display:block; touch-action:none}
 #roll.hand{touch-action:pan-x pan-y}
-.kbd{display:flex; height:92px; border-top:1px solid var(--line); background:var(--panel2); position:relative; user-select:none; touch-action:none; overflow:hidden}
+.kbd{display:flex; height:96px; border-top:1px solid var(--line); background:var(--panel2); position:relative; user-select:none; touch-action:none; overflow:hidden}
 .kbd .k{position:absolute; top:0; bottom:0; border:1px solid var(--line); border-top:0; background:var(--key-w); border-radius:0 0 4px 4px}
 .kbd .k.b{background:var(--key-b); z-index:2; bottom:38%; border-color:var(--key-b)}
 .kbd .k.on{background:var(--accent)}
-.kbd .k span{position:absolute; bottom:3px; left:0; right:0; text-align:center; font:10px var(--mono); color:var(--ink3); pointer-events:none}
+.kbd .k span{position:absolute; bottom:4px; left:0; right:0; text-align:center; font:var(--fs-1) var(--mono); color:var(--ink3); pointer-events:none}
 .kbd .k.b span{display:none}
 .kbd[hidden]{display:none}
 
+/* Estado vacío del piano roll: guía sin bloquear el toque */
+.empty{position:absolute; inset:0; display:grid; place-items:center; padding:var(--s5); pointer-events:none; z-index:2}
+.empty[hidden]{display:none}
+.empty-card{max-width:300px; text-align:center; display:grid; gap:var(--s2); justify-items:center; padding:var(--s5); border-radius:var(--r-lg); background:color-mix(in srgb, var(--panel) 88%, transparent); border:1px solid var(--accent-line); box-shadow:var(--shadow); -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px)}
+.empty-ic{width:44px; height:44px; border-radius:50%; display:grid; place-items:center; background:var(--accent-soft); color:var(--accent)}
+.empty-ic svg{width:22px; height:22px; fill:currentColor}
+.empty-card b{font-size:var(--fs-3); font-weight:var(--fw-2)}
+.empty-card p{margin:0; color:var(--ink2); font-size:var(--fs-2)}
+
 /* Inspector */
 .tabs{display:flex; border-bottom:1px solid var(--line)}
-.tabs button{flex:1; background:transparent; border:0; padding:9px 4px; font-weight:500; font-size:12px; color:var(--ink3); border-bottom:2px solid transparent}
+.tabs button{flex:1; background:transparent; border:0; padding:var(--s3) var(--s1); font-weight:var(--fw-2); font-size:var(--fs-2); color:var(--ink3); border-bottom:2px solid transparent}
 .tabs button[aria-selected="true"]{color:var(--ink); border-bottom-color:var(--accent)}
-.tabpane{flex:1; min-height:0; overflow-y:auto; padding:10px; display:grid; gap:12px; align-content:start}
+.tabpane{flex:1; min-height:0; overflow-y:auto; padding:var(--s3); display:grid; gap:var(--s4); align-content:start}
 .tabpane[hidden]{display:none}
-.tabpane h3{margin:0 0 6px; font:500 11px/1 var(--ui); letter-spacing:.1em; text-transform:uppercase; color:var(--ink3)}
-.grp-box{display:grid; gap:6px}
+.tabpane h3{margin:0 0 var(--s2); font:var(--fw-2) var(--fs-1)/1 var(--ui); letter-spacing:.1em; text-transform:uppercase; color:var(--ink3)}
+.grp-box{display:grid; gap:var(--s2)}
 .insp input[type=text]{width:100%}
-.insp .two{display:grid; grid-template-columns:1fr 1fr; gap:6px}
-.btn{height:28px; padding:0 10px; border-radius:6px; border:1px solid var(--line); background:var(--panel2); color:var(--ink); font-size:12px}
+.insp .two{display:grid; grid-template-columns:1fr 1fr; gap:var(--s2)}
+.btn{height:var(--ctl); padding:0 var(--s3); border-radius:var(--r-sm); border:1px solid var(--accent-line); background:var(--accent-5); color:var(--ink); font-size:var(--fs-2); transition:transform .08s ease, border-color .15s ease}
 .btn:hover{border-color:var(--ink3)}
 .btn.danger{color:var(--danger)}
-.btn.pri{background:var(--accent); color:var(--accent-ink); border-color:var(--accent)}
-.btn:disabled{opacity:.45; cursor:default}
-.note-txt{font-size:11.5px; color:var(--ink3); margin:0}
-.rng-hint{font-size:11px; color:var(--ink3); font-family:var(--mono)}
-.list{display:grid; gap:4px}
-.li{display:grid; grid-template-columns:48px minmax(0,1fr) 28px; gap:6px; align-items:center}
-.li.tm{grid-template-columns:48px 62px 28px}
-.li.mt{grid-template-columns:48px 56px 56px 28px}
+.btn.pri{background:var(--accent); color:var(--accent-ink); border-color:var(--accent); box-shadow:inset 0 1px 0 rgba(255,255,255,.28)}
+.btn:disabled{opacity:.45; cursor:default; transform:none}
+.note-txt{font-size:var(--fs-1); color:var(--ink3); margin:0; line-height:1.5}
+.rng-hint{font-size:var(--fs-1); color:var(--ink3); font-family:var(--mono)}
+.list{display:grid; gap:var(--s1)}
+.li{display:grid; grid-template-columns:48px minmax(0,1fr) 32px; gap:var(--s2); align-items:center}
+.li.tm{grid-template-columns:48px 64px 32px}
 .li input,.li select{width:100%}
-.li .x{height:26px; padding:0; border-radius:5px; border:1px solid var(--line); background:var(--panel2)}
-.chord-now{font:500 22px/1.1 var(--display); font-style:italic}
-.chord-list{display:flex; flex-wrap:wrap; gap:4px}
-.chord-list button{border:1px solid var(--line); background:var(--panel2); border-radius:5px; padding:3px 7px; font:11.5px var(--mono)}
+.li .x{height:var(--ctl); padding:0; border-radius:var(--r-sm); border:1px solid var(--accent-line); background:var(--accent-5)}
+.chord-now{font:var(--fw-2) var(--fs-4)/1.2 var(--ui)}
+.chord-list{display:flex; flex-wrap:wrap; gap:var(--s1)}
+.chord-list button{border:1px solid var(--accent-line); background:var(--accent-5); border-radius:6px; padding:var(--s1) var(--s2); font:var(--fs-1) var(--mono)}
 .chord-list button:hover{border-color:var(--accent)}
-.swatch{display:inline-block; width:10px; height:10px; border-radius:2px; margin-right:6px; vertical-align:-1px}
-.dlg{position:fixed; inset:0; z-index:50; background:rgba(8,10,16,.55); display:grid; place-items:center; padding:16px}
+
+/* Diálogos y avisos */
+.dlg{position:fixed; inset:0; z-index:50; background:var(--scrim); display:grid; place-items:center; padding:var(--s4)}
 .dlg[hidden]{display:none}
-.dlg .card{background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:16px; width:min(420px,100%); display:grid; gap:12px; max-height:90vh; overflow:auto}
-.dlg h3{margin:0; font:italic 500 20px var(--display)}
-.dlg .acts{display:flex; flex-wrap:wrap; gap:8px; justify-content:flex-end}
-#toast{position:fixed; left:50%; bottom:calc(18px + env(safe-area-inset-bottom, 0px)); transform:translateX(-50%); background:var(--ink); color:var(--bg); padding:8px 14px; border-radius:8px; font-size:12px; opacity:0; pointer-events:none; transition:opacity .2s; z-index:60; max-width:calc(100vw - 32px)}
+.dlg .card{background:var(--panel); border:1px solid var(--line); border-radius:var(--r-xl); padding:var(--s5); width:min(420px,100%); display:grid; gap:var(--s4); max-height:90vh; overflow:auto; box-shadow:var(--shadow)}
+.dlg h3{margin:0; font:var(--fw-2) var(--fs-4)/1.2 var(--ui)}
+.dlg .acts{display:flex; flex-wrap:wrap; gap:var(--s2); justify-content:flex-end}
+#toast{position:fixed; left:50%; bottom:calc(var(--s5) + env(safe-area-inset-bottom, 0px)); transform:translateX(-50%); background:var(--ink); color:var(--bg); padding:var(--s2) var(--s4); border-radius:var(--r-sm); font-size:var(--fs-2); opacity:0; pointer-events:none; transition:opacity .2s; z-index:60; max-width:calc(100vw - 32px)}
 #toast.show{opacity:1}
+
+/* Guía de primera vez */
+.intro-steps{display:grid; gap:var(--s3); margin:0; padding:0; list-style:none}
+.intro-steps li{display:grid; grid-template-columns:44px 1fr; gap:var(--s3); align-items:center}
+.intro-steps .ic{width:44px; height:44px; border-radius:var(--r-md); display:grid; place-items:center; background:var(--accent-soft); color:var(--accent)}
+.intro-steps .ic svg{width:22px; height:22px; fill:currentColor}
+.intro-steps b{display:block; font-weight:var(--fw-2)}
+.intro-steps span{color:var(--ink2); font-size:var(--fs-2)}
+
+/* Exportación lograda */
+.done{display:grid; justify-items:center; text-align:center; gap:var(--s2); padding:var(--s4) 0 var(--s2)}
+.done[hidden]{display:none}
+.done-ic{width:56px; height:56px; border-radius:50%; display:grid; place-items:center; background:var(--ok); color:#fff; box-shadow:0 0 0 8px color-mix(in srgb, var(--ok) 18%, transparent); animation:pop .42s cubic-bezier(.2,1.4,.4,1) both}
+.done-ic svg{width:28px; height:28px; fill:currentColor}
+.done b{font-size:var(--fs-3); font-weight:var(--fw-2)}
+.done > span:not(.done-ic){color:var(--ink2); font-size:var(--fs-2)}
+.done > .mono{font-size:var(--fs-1); color:var(--ink3)}
+@keyframes pop{0%{transform:scale(.4); opacity:0} 100%{transform:scale(1); opacity:1}}
+
+/* Fin de la obra */
+.endcard{position:fixed; left:50%; bottom:calc(var(--s5) + env(safe-area-inset-bottom, 0px)); z-index:45; transform:translate(-50%, 0); width:min(380px, calc(100vw - 32px)); display:flex; align-items:center; gap:var(--s3); padding:var(--s3) var(--s3) var(--s3) var(--s4); border-radius:var(--r-lg); background:var(--panel); border:1px solid var(--accent-line); box-shadow:var(--shadow); animation:rise .32s cubic-bezier(.2,1.1,.4,1) both}
+.endcard[hidden]{display:none}
+.endcard .txt{flex:1; min-width:0; display:grid; gap:2px}
+.endcard b{font-weight:var(--fw-2)}
+.endcard .sum{font-size:var(--fs-1); color:var(--ink3)}
+.endcard .x{width:var(--ctl); min-width:var(--ctl); height:var(--ctl); display:grid; place-items:center; padding:0; border:0; background:none; color:var(--ink3)}
+.endcard .x svg{width:16px; height:16px; fill:currentColor}
+@keyframes rise{0%{transform:translate(-50%, 24px); opacity:0} 100%{transform:translate(-50%, 0); opacity:1}}
 
 @media (max-width:1180px){
   .work{grid-template-columns:208px minmax(0,1fr); grid-template-areas:"tracks stage" "insp insp"}
   .insp{max-height:300px}
 }
+
 /* Elementos solo para teléfono: ocultos en pantallas amplias */
-.mtop,.mbot,.sh-head,.sh-close,.selbar,.sheet-bg{display:none}
+.mtop,.mdock,.sh-head,.sh-close,.selbar,.sheet-bg{display:none}
 
 @media (max-width:760px){
   /* La app ocupa exactamente la pantalla: el piano roll se queda con todo el alto libre */
-  body{padding-block:6px 0; overflow:hidden}
-  #app{min-height:0; height:100%; gap:6px; overflow:hidden; overflow:clip}
+  body{padding-block:var(--s2) 0; overflow:hidden}
+  #app{min-height:0; height:100%; gap:var(--s2); overflow:hidden; overflow:clip}
   .work{display:flex; flex-direction:column; flex:1; min-height:0}
-  .stage{flex:1; min-height:0}
-  .roll-wrap{flex:1; min-height:0; height:auto; border-radius:8px 8px 0 0}
+  .stage{flex:1; min-height:0; border-radius:var(--r-md)}
+  .roll-wrap{flex:1; min-height:0; height:auto; border-radius:var(--r-md) var(--r-md) 0 0}
   .kbd{height:120px}
+  .ib,.btn,.fields input,.fields select,.insp select,.insp input[type=text],.insp input[type=number]{height:var(--tap); font-size:var(--fs-3)}
+  .ib{font-size:var(--fs-2)}
+  .ib[data-ic]{width:var(--tap)}
 
-  /* Barra superior */
-  .mtop{display:flex; flex-direction:column; gap:6px; flex:none}
-  .mrow{display:flex; align-items:center; gap:6px; min-width:0}
-  .mrow .ib{width:38px; height:38px; padding:0; flex:none}
-  .mtitle{flex:1; min-width:0; height:38px; text-align:left; background:none; border:0; padding:0 4px; font:italic 500 18px/1.1 var(--display); color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
-  .mtrack{flex:1; min-width:0; height:38px; display:flex; align-items:center; gap:8px; padding:0 10px; border-radius:8px; border:1px solid var(--line); background:var(--panel); color:var(--ink); font-weight:500; text-align:left}
-  .mtrack .dot{flex:none; width:10px; height:10px; border-radius:3px; background:var(--accent)}
+  /* Barra superior: una fila, solo contexto */
+  .mtop{display:flex; align-items:center; gap:var(--s2); flex:none; min-width:0}
+  .mtop .ib{flex:none}
+  .mtrack{flex:1; min-width:0; height:var(--tap); display:flex; align-items:center; gap:var(--s2); padding:0 var(--s3); border-radius:var(--r-md); border:1px solid var(--line); background:var(--panel); color:var(--ink); font-size:var(--fs-3); font-weight:var(--fw-2); text-align:left; box-shadow:var(--shadow)}
+  .mtrack .dot{flex:none; width:12px; height:12px; border-radius:4px; background:var(--accent)}
   .mtrack .nm{flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
-  .mtrack .car{flex:none; color:var(--ink3); font-size:11px}
-  .mpos{flex:none; font-size:11.5px; color:var(--ink2); padding:0 2px; white-space:nowrap}
+  .mtrack .car{flex:none; color:var(--ink3); font-size:var(--fs-1)}
 
-  /* Barra inferior, en la zona del pulgar */
-  .mbot{display:flex; flex:none; gap:2px; padding:4px; margin-bottom:6px; border:1px solid var(--line); border-radius:12px; background:var(--panel)}
-  .mbot button{flex:1; min-width:0; display:flex; flex-direction:column; align-items:center; gap:3px; padding:6px 0 4px; border:0; border-radius:8px; background:none; color:var(--ink2); font-size:10.5px; font-weight:500}
+  /* Dock inferior en la zona del pulgar: transporte y herramientas */
+  .mdock{display:grid; gap:var(--s1); flex:none; margin-bottom:var(--s2); padding:var(--s2) var(--s1) var(--s1); border:1px solid var(--line); border-radius:var(--r-lg); background:var(--panel); box-shadow:var(--shadow-up)}
+  .mtrans{display:grid; grid-template-columns:1fr auto auto auto 1fr; align-items:center; gap:var(--s3); padding:0 var(--s2)}
+  .mpos{justify-self:start; font-size:var(--fs-1); color:var(--ink2); white-space:nowrap}
+  .mtrans .ib{border-radius:50%}
+  .mtrans #mPlay{width:56px; height:56px; min-width:56px}
+  .mtrans #mPlay svg{width:22px; height:22px}
+  .mtrans #mLoop{justify-self:end}
+  .mbot{display:flex; gap:2px}
+  .mbot button{flex:1; min-width:0; min-height:52px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:var(--s1); padding:var(--s1) 0; border:0; border-radius:var(--r-md); background:none; color:var(--ink2); font-size:var(--fs-1); font-weight:var(--fw-2); transition:background-color .15s ease, color .15s ease}
   .mbot button span{display:flex}
-  .mbot svg{width:21px; height:21px; fill:currentColor}
+  .mbot svg{width:22px; height:22px; fill:currentColor}
   .mbot button[aria-pressed="true"]{color:var(--accent); background:var(--accent-soft)}
+  .mbot button:active{transform:scale(.96)}
 
-  /* Barra de selección, encima del piano roll */
-  .selbar:not([hidden]){display:flex; align-items:center; gap:4px; padding:6px; overflow-x:auto; border-top:1px solid var(--line); background:var(--panel); scrollbar-width:none}
-  .selbar .ib{flex:none; height:34px}
-  .selcount{flex:none; font-size:11.5px; color:var(--ink2); padding:0 4px; white-space:nowrap}
+  /* Barra de selección, encima del dock */
+  .selbar:not([hidden]){display:flex; align-items:center; gap:var(--s1); padding:var(--s2); overflow-x:auto; border-top:1px solid var(--line); background:var(--panel); scrollbar-width:none; border-radius:0 0 var(--r-md) var(--r-md)}
+  .selbar .ib{flex:none}
+  .selcount{flex:none; font-size:var(--fs-1); color:var(--ink2); padding:0 var(--s1); white-space:nowrap}
 
-  /* Hojas inferiores: Obra, Pistas, Edición y Ajustes */
+  .endcard{bottom:calc(150px + env(safe-area-inset-bottom, 0px))}
+
+  /* Hojas inferiores: Obra, Pistas, Herramientas y Ajustes */
   .top,.tracks,.tools,.insp{
     position:fixed; left:0; right:0; bottom:0; top:auto; z-index:40; margin:0;
-    max-height:78vh; max-height:78dvh; overflow-y:auto; overscroll-behavior:contain;
-    border:1px solid var(--line); border-bottom:0; border-radius:14px 14px 0 0; background:var(--panel);
-    box-shadow:0 -10px 30px rgba(10,12,20,.18);
-    padding:0 max(14px, env(safe-area-inset-right, 0px)) calc(14px + env(safe-area-inset-bottom, 0px)) max(14px, env(safe-area-inset-left, 0px));
-    transform:translateY(102%); visibility:hidden; transition:transform .24s ease, visibility 0s linear .24s;
+    max-height:80vh; max-height:80dvh; overflow-y:auto; overscroll-behavior:contain;
+    border:1px solid var(--line); border-bottom:0; border-radius:var(--r-xl) var(--r-xl) 0 0; background:var(--panel);
+    box-shadow:var(--shadow-up);
+    padding:0 max(16px, env(safe-area-inset-right, 0px)) calc(var(--s5) + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+    transform:translateY(102%); visibility:hidden; transition:transform .26s cubic-bezier(.2,.9,.3,1), visibility 0s linear .26s;
   }
-  body[data-sheet="top"] .top, body[data-sheet="tracks"] .tracks, body[data-sheet="tools"] .tools, body[data-sheet="insp"] .insp{transform:none; visibility:visible; transition:transform .24s ease}
-  .sheet-bg{position:fixed; inset:0; z-index:39; background:rgba(8,10,16,.4)}
+  body[data-sheet="top"] .top, body[data-sheet="tracks"] .tracks, body[data-sheet="tools"] .tools, body[data-sheet="insp"] .insp{transform:none; visibility:visible; transition:transform .26s cubic-bezier(.2,.9,.3,1)}
+  .sheet-bg{position:fixed; inset:0; z-index:39; background:var(--scrim)}
   body[data-sheet] .sheet-bg{display:block}
-  .sh-head{display:flex; align-items:center; justify-content:space-between; gap:8px; position:sticky; top:0; z-index:3; background:var(--panel); padding:12px 0 10px; width:100%}
-  .sh-head h2,.tracks .pane-head h2{font-size:12px}
+  .sh-head{display:flex; align-items:center; justify-content:space-between; gap:var(--s2); position:sticky; top:0; z-index:3; background:var(--panel); padding:var(--s4) 0 var(--s3); width:100%}
+  .sh-head::before,.tracks .pane-head::before{content:""; position:absolute; top:var(--s2); left:50%; width:36px; height:4px; margin-left:-18px; border-radius:2px; background:var(--line)}
+  .sh-head h2,.tracks .pane-head h2{font-size:var(--fs-3); letter-spacing:0; text-transform:none; color:var(--ink); font-weight:var(--fw-2)}
   .sh-close{display:inline-block}
 
   /* Contenido de cada hoja */
-  .top{display:flex; flex-direction:column; align-items:stretch; gap:14px}
+  .top{display:flex; flex-direction:column; align-items:stretch; gap:var(--s4)}
   .top .brand{flex:none}
   .top .wordmark{display:none}
-  #title{font-size:16px; border-bottom-color:var(--line); padding:6px 0}
-  #btnStart,#btnStop,#btnPlay,#btnRec,#pos{display:none}
-  .top .transport,.top .fields,.top .actions{gap:8px}
-  .top .fields{display:grid; grid-template-columns:1fr 1fr; gap:10px}
-  .top .fields label{flex-direction:column; align-items:stretch; gap:4px}
+  #title{font-size:var(--fs-3); border-bottom-color:var(--line); padding:var(--s2) 0}
+  #btnStart,#btnStop,#btnPlay,#btnRec,#pos,#btnLoop{display:none}
+  .top .fields{display:grid; grid-template-columns:1fr 1fr; gap:var(--s3)}
+  .top .fields label{flex-direction:column; align-items:stretch; gap:var(--s1)}
   .top .fields label[for="keyRoot"]{grid-column:1 / -1}
   .top .fields select,.top .fields input{width:100%}
   #bpm{width:100%}
@@ -242,25 +309,33 @@ input[type=range]{accent-color:var(--accent); min-width:0}
   .status{margin-left:0}
 
   .tracks{display:flex; flex-direction:column; padding-top:0}
-  .tracks .pane-head{position:sticky; top:0; z-index:3; background:var(--panel); padding:12px 0 10px; border-bottom:1px solid var(--line)}
-  #trackList{flex:1; min-height:0; overflow-y:auto; margin-inline:calc(-1 * max(14px, env(safe-area-inset-left, 0px)))}
-  .trk{padding-block:9px; grid-template-columns:6px minmax(0,1fr) auto}
-  .trk .mini{width:34px; height:30px}
-  .master{padding-inline:0}
+  .tracks .pane-head{position:sticky; top:0; z-index:3; background:var(--panel); padding:var(--s4) 0 var(--s3); border-bottom:1px solid var(--line)}
+  #trackList{flex:1; min-height:0; overflow-y:auto; margin-inline:calc(-1 * max(16px, env(safe-area-inset-left, 0px)))}
+  .trk{padding-block:var(--s3); padding-right:var(--s4)}
+  .trk .nm{font-size:var(--fs-3)}
+  .trk .mini{width:var(--tap); height:var(--tap); border-radius:var(--r-sm); font-size:var(--fs-2)}
+  .trk .btns{gap:var(--s2)}
+  .trk input[type=range]{height:28px; margin-top:var(--s2)}
+  .master{padding-inline:0; gap:var(--s3)}
+  .row{grid-template-columns:72px minmax(0,1fr) 48px; font-size:var(--fs-2)}
+  .row input[type=range]{height:28px}
 
-  .tools{display:flex; flex-direction:column; align-items:stretch; gap:14px}
-  .tools .grp{flex-wrap:wrap; gap:6px}
-  .tools .grp::before{content:attr(aria-label); width:100%; font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink3)}
+  .tools{display:flex; flex-direction:column; align-items:stretch; gap:var(--s4)}
+  .tools .grp{flex-wrap:wrap; gap:var(--s2)}
+  .tools .grp::before{content:attr(aria-label); width:100%; font-size:var(--fs-1); letter-spacing:.1em; text-transform:uppercase; color:var(--ink3)}
   .tools .grp[aria-label="Herramienta"],.tools .sep,.tools .tip{display:none}
-  .tools .ib{height:38px}
 
-  .insp{display:flex; flex-direction:column; height:78vh; height:78dvh}
-  .insp .tabpane{padding-inline:0 6px}
+  .insp{display:flex; flex-direction:column; height:80vh; height:80dvh}
+  .insp .tabpane{padding-inline:0 var(--s2)}
   .tabs{flex:none}
-  .tabs button{padding:11px 4px}
+  .tabs button{min-height:var(--tap)}
+  .li{grid-template-columns:56px minmax(0,1fr) var(--tap)}
+  .li.tm{grid-template-columns:56px 1fr var(--tap)}
+  .li .x{width:var(--tap); height:var(--tap)}
+  .chord-list button{min-height:36px; padding:0 var(--s3)}
 }
 @media (max-width:760px) and (prefers-reduced-motion:reduce){ .top,.tracks,.tools,.insp{transition:none} }
-@media (prefers-reduced-motion:reduce){ #toast,.meter i{transition:none} }
+@media (prefers-reduced-motion:reduce){ #toast,.meter i,.ib,.btn{transition:none} .done-ic,.endcard{animation:none} }
 
 /* Ajustes para iPhone */
 body{-webkit-text-size-adjust:100%; touch-action:manipulation}
@@ -270,19 +345,10 @@ body{-webkit-text-size-adjust:100%; touch-action:manipulation}
 <body>
 <div id="app">
   <div class="mtop" aria-label="Barra principal">
-    <div class="mrow">
-      <button id="mMenu" class="ib" data-ic="menu" aria-label="Obra: archivo, tempo, tonalidad y cuadrícula"></button>
-      <button id="mTitle" class="mtitle" aria-label="Abrir ajustes de la obra"></button>
-      <button id="mUndo" class="ib" data-ic="undo" aria-label="Deshacer"></button>
-      <button id="mRedo" class="ib" data-ic="redo" aria-label="Rehacer"></button>
-    </div>
-    <div class="mrow">
-      <button id="mTrack" class="mtrack" aria-label="Cambiar de pista"><i class="dot"></i><span class="nm"></span><span class="car" aria-hidden="true">▾</span></button>
-      <span id="mPos" class="mpos mono" aria-live="off">1·1 0:00</span>
-      <button id="mStart" class="ib" data-ic="start" aria-label="Volver al inicio"></button>
-      <button id="mPlay" class="ib primary" data-ic="play" aria-label="Reproducir"></button>
-      <button id="mRec" class="ib rec" data-ic="rec" aria-label="Grabar" aria-pressed="false"></button>
-    </div>
+    <button id="mMenu" class="ib" data-ic="menu" aria-label="Obra: título, tempo, tonalidad, cuadrícula y archivo"></button>
+    <button id="mTrack" class="mtrack" aria-label="Cambiar de pista"><i class="dot"></i><span class="nm"></span><span class="car" aria-hidden="true">▾</span></button>
+    <button id="mUndo" class="ib" data-ic="undo" aria-label="Deshacer"></button>
+    <button id="mRedo" class="ib" data-ic="redo" aria-label="Rehacer"></button>
   </div>
 
   <header class="top">
@@ -314,10 +380,11 @@ body{-webkit-text-size-adjust:100%; touch-action:manipulation}
       <button id="btnNew" class="ib txt">Nueva</button>
       <button id="btnOpen" class="ib txt">Abrir</button>
       <button id="btnExport" class="ib txt primary">Exportar</button>
+      <button id="btnGuide" class="ib txt">Guía</button>
       <input id="fileIn" type="file" accept=".json,.mid,.midi,audio/midi,application/json" hidden>
     </div>
     <span id="status" class="status" role="status">Listo</span>
-    <span class="status">Versión 3 · interfaz para teléfono</span>
+    <span class="status">Versión 4 · diseño renovado</span>
   </header>
 
   <main class="work">
@@ -379,6 +446,13 @@ body{-webkit-text-size-adjust:100%; touch-action:manipulation}
         <button id="btnRegionClear" class="btn" hidden>Quitar región</button>
       </div>
       <div id="rollWrap" class="roll-wrap">
+        <div id="emptyHint" class="empty" hidden>
+          <div class="empty-card">
+            <span class="empty-ic" data-ic="pencil"></span>
+            <b id="emptyTitle">Esta pista aún no tiene notas</b>
+            <p id="emptyText">Toca la cuadrícula para escribir la primera nota.</p>
+          </div>
+        </div>
         <div id="scroller" class="scroller"><div id="sizer" class="sizer"><canvas id="roll" aria-label="Piano roll: cuadrícula de notas"></canvas></div></div>
       </div>
       <div id="selBar" class="selbar" role="toolbar" aria-label="Notas seleccionadas" hidden>
@@ -471,6 +545,14 @@ body{-webkit-text-size-adjust:100%; touch-action:manipulation}
     </aside>
   </main>
 
+  <div class="mdock">
+  <div class="mtrans" role="group" aria-label="Transporte">
+    <span id="mPos" class="mpos mono" aria-live="off">1·1 0:00</span>
+    <button id="mStart" class="ib" data-ic="start" aria-label="Volver al inicio"></button>
+    <button id="mPlay" class="ib primary" data-ic="play" aria-label="Reproducir"></button>
+    <button id="mRec" class="ib rec" data-ic="rec" aria-label="Grabar" aria-pressed="false"></button>
+    <button id="mLoop" class="ib" data-ic="loop" aria-label="Bucle" aria-pressed="false"></button>
+  </div>
   <nav class="mbot" aria-label="Herramientas">
     <button data-tool="pencil" aria-label="Lápiz"><span data-ic="pencil"></span>Lápiz</button>
     <button data-tool="select" aria-label="Selección"><span data-ic="select"></span>Selección</button>
@@ -478,6 +560,7 @@ body{-webkit-text-size-adjust:100%; touch-action:manipulation}
     <button id="mEdit" aria-label="Edición"><span data-ic="edit"></span>Edición</button>
     <button id="mSet" aria-label="Ajustes"><span data-ic="gear"></span>Ajustes</button>
   </nav>
+  </div>
   <div id="sheetBg" class="sheet-bg"></div>
 
   <div id="dlgNew" class="dlg" hidden>
@@ -503,8 +586,32 @@ body{-webkit-text-size-adjust:100%; touch-action:manipulation}
         <button id="exJson" class="btn">Proyecto (.json)</button>
         <button id="exClose" class="btn">Cerrar</button>
       </div>
+      <div id="exDone" class="done" hidden>
+        <span class="done-ic" data-ic="check"></span>
+        <b id="exDoneTitle">Tu obra está lista</b>
+        <span id="exDoneSum"></span>
+        <span id="exDoneFile" class="mono"></span>
+      </div>
       <div id="exMsg" class="note-txt" role="status"></div>
     </div>
+  </div>
+
+  <div id="dlgIntro" class="dlg" hidden>
+    <div class="card" role="dialog" aria-labelledby="dlgIntroT">
+      <h3 id="dlgIntroT">Bienvenido a Boceto Orquestal</h3>
+      <p class="note-txt">Ya cargué una pieza de ejemplo para que escuches cómo funciona. Lo esencial:</p>
+      <ul class="intro-steps" id="introSteps"></ul>
+      <div class="acts">
+        <button id="introPlay" class="btn">Escuchar el ejemplo</button>
+        <button id="introGo" class="btn pri">Empezar</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="endCard" class="endcard" role="status" hidden>
+    <div class="txt"><b>Fin de la obra</b><span id="endSum" class="sum"></span></div>
+    <button id="endAgain" class="btn pri">Escuchar de nuevo</button>
+    <button id="endX" class="x" data-ic="close" aria-label="Cerrar"></button>
   </div>
 
   <div id="toast" role="status"></div>
@@ -1052,6 +1159,7 @@ function startTransport(){
   const countN = (T.count || T.rec) ? m.n : 0;
   if(countN) for(let i = 0; i < countN; i++) clickAt(now + i * beatDur, i === 0);
   T.originAudio = now + countN * beatDur; T.sched = T.originSec; T.playing = true;
+  if(typeof hideEndCard === 'function') hideEndCard();
   clearInterval(T.timer); T.timer = setInterval(pump, 25); pump();
   updateTransportUI();
 }
@@ -1279,7 +1387,7 @@ async function saveFile(filename, blob){
   if(hasViewer){
     const dl = await window.claude.use('downloads');
     if(!dl){ msg('En esta vista no se pueden guardar archivos. Abre la obra en claude.ai.'); return false; }
-    try{ await dl.save({ filename, data:blob }); msg('Archivo listo: ' + filename); toast('Archivo guardado'); return true; }
+    try{ await dl.save({ filename, data:blob }); showExportDone(filename); toast('Archivo guardado'); return true; }
     catch(e){ msg(e && e.code === 'declined' ? 'Guardado cancelado.' : 'No se pudo guardar (' + ((e && e.code) || 'error') + ').'); return false; }
   }
   const type = filename.endsWith('.zip') ? 'application/zip' : filename.endsWith('.json') ? 'application/json' : (blob.type || 'application/octet-stream');
@@ -1289,11 +1397,11 @@ async function saveFile(filename, blob){
   const canShare = !!(navigator.canShare && navigator.share && navigator.canShare({ files:[file] }));
   const manual = why => {
     msg(why); const b = document.createElement('button'); b.className = 'btn pri'; b.textContent = canShare ? 'Compartir o guardar ' + filename : 'Descargar ' + filename; b.style.marginTop = '8px'; b.style.display = 'block';
-    b.onclick = async () => { try{ if(canShare) await viaShare(); else viaLink(); msg('Archivo listo: ' + filename); }catch(e){ if(!e || e.name !== 'AbortError') { viaLink(); } } };
+    b.onclick = async () => { try{ if(canShare) await viaShare(); else viaLink(); showExportDone(filename); }catch(e){ if(!e || e.name !== 'AbortError') { viaLink(); } } };
     $('exMsg').append(b);
   };
   if(canShare){
-    try{ await viaShare(); msg('Archivo listo: ' + filename); return true; }
+    try{ await viaShare(); showExportDone(filename); return true; }
     catch(e){ if(e && e.name === 'AbortError'){ msg('Guardado cancelado.'); return false; } manual('Toca el botón para terminar de guardar.'); return false; }
   }
   try{ viaLink(); msg('Descarga iniciada: ' + filename); return true; }catch(e){ manual('Toca el botón para descargar.'); return false; }
@@ -1357,7 +1465,7 @@ function layout(){
   requestDraw();
 }
 function txt(s, x, y, color, font, align){ g2.fillStyle = color; g2.font = font || '11px "IBM Plex Sans", system-ui, sans-serif'; g2.textAlign = align || 'left'; g2.textBaseline = 'middle'; g2.fillText(s, x, y); }
-const MONO = '10.5px "IBM Plex Mono", ui-monospace, monospace';
+const MONO = '11px "IBM Plex Mono", ui-monospace, monospace';
 
 function draw(){
   if(!S || !vw) return;
@@ -1441,7 +1549,7 @@ function drawKeys(act, ins, nh, r0, r1){
 }
 function drawVelocity(act, col, y0){
   g2.fillStyle = PAL.panel; g2.fillRect(0, y0, vw, VEL_H); g2.strokeStyle = PAL.line; g2.beginPath(); g2.moveTo(0, y0 + 0.5); g2.lineTo(vw, y0 + 0.5); g2.stroke();
-  txt('Velocidad', 8, y0 + 14, PAL.ink3, '10px "IBM Plex Sans", sans-serif'); txt('y reguladores', 8, y0 + 28, PAL.ink3, '10px "IBM Plex Sans", sans-serif');
+  txt('Velocidad', 8, y0 + 14, PAL.ink3, '11px "IBM Plex Sans", sans-serif'); txt('y reguladores', 8, y0 + 28, PAL.ink3, '11px "IBM Plex Sans", sans-serif');
   const H = VEL_H - 16, base = y0 + VEL_H - 4;
   g2.save(); g2.beginPath(); g2.rect(KEYW, y0 + 1, vw - KEYW, VEL_H - 1); g2.clip();
   g2.strokeStyle = PAL.sub; g2.lineWidth = 1; for(const f of [0.25, 0.5, 0.75]){ const y = Math.round(base - H * f) + 0.5; g2.beginPath(); g2.moveTo(KEYW, y); g2.lineTo(vw, y); g2.stroke(); }
@@ -1449,7 +1557,7 @@ function drawVelocity(act, col, y0){
     const xa = tickX(h.t0), xb = tickX(h.t1), ha = H * clamp(h.a / 160, 0, 1), hb = H * clamp(h.b / 160, 0, 1);
     g2.fillStyle = PAL.soft; g2.beginPath(); g2.moveTo(xa, base); g2.lineTo(xa, base - ha); g2.lineTo(xb, base - hb); g2.lineTo(xb, base); g2.closePath(); g2.fill();
     g2.strokeStyle = PAL.accent; g2.lineWidth = 1.5; g2.beginPath(); g2.moveTo(xa, base - ha); g2.lineTo(xb, base - hb); g2.stroke();
-    txt(h.b > h.a ? 'cresc.' : 'dim.', xa + 4, base - H - 2, PAL.accent, 'italic 10.5px "IBM Plex Sans", sans-serif');
+    txt(h.b > h.a ? 'cresc.' : 'dim.', xa + 4, base - H - 2, PAL.accent, 'italic 11px "IBM Plex Sans", sans-serif');
   }
   const tmin = xTick(KEYW) - 2, tmax = xTick(vw) + 2;
   for(const n of act.notes){
@@ -1466,7 +1574,7 @@ function drawOrchestra(){
     g2.fillStyle = act ? PAL.soft : (i % 2 ? PAL.black : PAL.roll); g2.fillRect(KEYW, y, vw - KEYW, LANE_H);
     g2.fillStyle = PAL.panel; g2.fillRect(0, y, KEYW, LANE_H); g2.fillStyle = col; g2.fillRect(0, y, 4, LANE_H);
     g2.save(); g2.beginPath(); g2.rect(5, y, KEYW - 6, LANE_H); g2.clip();
-    txt(t.name, 9, y + 14, t.mute ? PAL.ink3 : PAL.ink, '500 11px "IBM Plex Sans", sans-serif'); txt(t.solo ? 'solo' : t.mute ? 'silencio' : '', 9, y + 30, PAL.ink3, '10px "IBM Plex Sans", sans-serif'); g2.restore();
+    txt(t.name, 9, y + 14, t.mute ? PAL.ink3 : PAL.ink, '500 11px "IBM Plex Sans", sans-serif'); txt(t.solo ? 'solo' : t.mute ? 'silencio' : '', 9, y + 30, PAL.ink3, '11px "IBM Plex Sans", sans-serif'); g2.restore();
     g2.strokeStyle = PAL.line; g2.beginPath(); g2.moveTo(0, y + LANE_H - 0.5); g2.lineTo(vw, y + LANE_H - 0.5); g2.stroke();
     let lo = 127, hi = 0; for(const n of t.notes){ if(n.p < lo) lo = n.p; if(n.p > hi) hi = n.p; }
     if(lo > hi){ lo = ins.lo; hi = ins.hi; } lo -= 1; hi += 1; if(hi - lo < 12){ const c = (hi + lo) / 2; lo = c - 6; hi = c + 6; }
@@ -1499,7 +1607,7 @@ function drawHeader(){
   }
   g2.restore();
   g2.fillStyle = PAL.panel; g2.fillRect(0, 0, KEYW, HDR); g2.strokeStyle = PAL.line; g2.beginPath(); g2.moveTo(KEYW + 0.5, 0); g2.lineTo(KEYW + 0.5, HDR); g2.stroke();
-  const nar = KEYW < 50, lf = '10px "IBM Plex Sans", sans-serif';
+  const nar = KEYW < 50, lf = '11px "IBM Plex Sans", sans-serif';
   txt(nar ? 'Comp.' : 'Compás', 6, RULER_H / 2 + 1, PAL.ink3, lf); txt(nar ? 'Secc.' : 'Secciones', 6, RULER_H + MARK_H / 2, PAL.ink3, lf); txt(nar ? 'Acord.' : 'Acordes', 6, RULER_H + MARK_H + CHORD_H / 2, PAL.ink3, lf);
 }
 /* ===== Piano roll: interacción con puntero, rueda y zoom ===== */
@@ -1716,6 +1824,7 @@ const ICONS = {
   start:'<svg viewBox="0 0 24 24"><path d="M5 5h2.5v14H5zM19 5v14L8.5 12z"/></svg>',
   edit:'<svg viewBox="0 0 24 24"><path d="M3 5h12v2H3zM3 11h8v2H3zM3 17h6v2H3zM20.7 9.3l-1.4-1.4a1 1 0 00-1.4 0L11 14.8V18h3.2l6.5-6.5a1 1 0 000-1.4z"/></svg>',
   gear:'<svg viewBox="0 0 24 24"><path fill-rule="evenodd" d="M10.3 2h3.4l.5 2.6c.6.2 1.2.5 1.7.9l2.5-.9 1.7 2.9-2 1.8c.1.6.1 1.2 0 1.8l2 1.8-1.7 2.9-2.5-.9c-.5.4-1.1.7-1.7.9l-.5 2.6h-3.4l-.5-2.6a7 7 0 01-1.7-.9l-2.5.9-1.7-2.9 2-1.8a6 6 0 010-1.8l-2-1.8 1.7-2.9 2.5.9c.5-.4 1.1-.7 1.7-.9zM12 8.5a3.5 3.5 0 100 7 3.5 3.5 0 000-7z" transform="translate(0 1)"/></svg>',
+  check:'<svg viewBox="0 0 24 24"><path d="M9.5 16.2L5.3 12l-1.4 1.4 5.6 5.6L20.1 8.4 18.7 7z"/></svg>',
   close:'<svg viewBox="0 0 24 24"><path d="M6.4 5L12 10.6 17.6 5 19 6.4 13.4 12l5.6 5.6-1.4 1.4-5.6-5.6L6.4 19 5 17.6 10.6 12 5 6.4z"/></svg>',
   zout:'<svg viewBox="0 0 24 24"><path fill-rule="evenodd" d="M10 4a6 6 0 014.7 9.7l5 5-1.4 1.4-5-5A6 6 0 1110 4zm0 2a4 4 0 100 8 4 4 0 000-8zM7.5 9h5v2h-5z"/></svg>'
 };
@@ -1751,12 +1860,11 @@ function syncControls(){
   $('mVol').value = S.master.vol; $('mRev').value = S.master.rev; $('mRoom').value = String(S.master.room);
   $('mVolO').textContent = Math.round(S.master.vol * 100) + '%'; $('mRevO').textContent = Math.round(S.master.rev * 100) + '%';
   $('barsIn').value = S.bars;
-  $('mTitle').textContent = S.title || 'Sin título';
 }
 function updateTransportUI(){
   $('btnPlay').innerHTML = T.playing ? ICONS.pause : ICONS.play; $('btnPlay').setAttribute('aria-label', T.playing ? 'Pausar' : 'Reproducir');
   $('btnRec').setAttribute('aria-pressed', T.rec);
-  $('mPlay').innerHTML = T.playing ? ICONS.pause : ICONS.play; $('mPlay').setAttribute('aria-label', T.playing ? 'Pausar' : 'Reproducir'); $('mRec').setAttribute('aria-pressed', T.rec); $('btnLoop').setAttribute('aria-pressed', T.loop); $('btnMet').setAttribute('aria-pressed', T.metro); $('btnCount').setAttribute('aria-pressed', T.count);
+  $('mPlay').innerHTML = T.playing ? ICONS.pause : ICONS.play; $('mPlay').setAttribute('aria-label', T.playing ? 'Pausar' : 'Reproducir'); $('mRec').setAttribute('aria-pressed', T.rec); $('mLoop').setAttribute('aria-pressed', T.loop); $('btnLoop').setAttribute('aria-pressed', T.loop); $('btnMet').setAttribute('aria-pressed', T.metro); $('btnCount').setAttribute('aria-pressed', T.count);
 }
 function updateRegionUI(){
   const on = !!range; $('regionInfo').hidden = !on; $('btnRegionClear').hidden = !on;
@@ -1808,7 +1916,8 @@ function bindInspector(){
   bind('trkVol', (t, v) => t.vol = v); bind('trkPan', (t, v) => t.pan = v); bind('trkRev', (t, v) => t.rev = v);
   bind('tmA', (t, v) => t.tim.a = v); bind('tmR', (t, v) => t.tim.r = v); bind('tmB', (t, v) => t.tim.b = v);
   ['trkVol','trkPan','trkRev','tmA','tmR','tmB'].forEach(id => $(id).addEventListener('pointerdown', () => checkpoint(), { once:false }));
-  $('btnAddTrack').onclick = () => { checkpoint(); const t = makeTrack('vn1'); S.tracks.push(t); activeId = t.id; sel.clear(); touch({ panels:true }); selectTrack(t.id); layout(); $('trkInst').focus(); toast('Pista añadida. Elige su instrumento en el panel Pista.'); };
+  $('btnAddTrack').onclick = () => { checkpoint(); const t = makeTrack('vn1'); S.tracks.push(t); activeId = t.id; sel.clear(); touch({ panels:true }); selectTrack(t.id); layout();
+    if(isPhone()){ closeSheet(); showTab('Track'); openSheet('insp'); toast('Pista añadida: elige su instrumento'); } else { $('trkInst').focus(); toast('Pista añadida. Elige su instrumento en el panel Pista.'); } };
   $('btnTrkDup').onclick = () => { const t = activeTrack(); checkpoint(); const c = JSON.parse(JSON.stringify(t)); c.id = uid(); c.name = t.name + ' (copia)'; c.notes.forEach(n => n.id = uid()); S.tracks.splice(S.tracks.indexOf(t) + 1, 0, c); activeId = c.id; touch({ panels:true }); selectTrack(c.id); layout(); };
   $('btnTrkDel').onclick = () => { if(S.tracks.length < 2){ toast('La obra necesita al menos una pista.'); return; } const t = activeTrack(), i = S.tracks.indexOf(t); checkpoint(); S.tracks.splice(i, 1); if(live) live.nodes.delete(t.id); activeId = S.tracks[Math.min(i, S.tracks.length - 1)].id; sel.clear(); touch({ panels:true }); selectTrack(activeId); layout(); toast('Pista eliminada. Ctrl+Z para recuperarla.'); };
   const mv = d => { const t = activeTrack(), i = S.tracks.indexOf(t), j = i + d; if(j < 0 || j >= S.tracks.length) return; checkpoint(); S.tracks.splice(i, 1); S.tracks.splice(j, 0, t); touch({ tracks:true }); layout(); };
@@ -1916,7 +2025,7 @@ function clearHairpins(){
 /* ----- Proyectos ----- */
 function loadProject(P){
   if(T.playing){ stopTransportNow(); finishRecording(); }
-  S = normalize(P); activeId = S.tracks[0].id; sel.clear(); range = null; curTick = 0; V.lastDur = 48;
+  S = normalize(P); activeId = (S.tracks.find(t => t.notes.some(n => n.t === 0) && instOf(t).h !== 0) || S.tracks[0]).id; sel.clear(); range = null; curTick = 0; V.lastDur = 48;
   if(live){ live.nodes.clear(); applyMixTo(live, S, true); setRoom(S.master.room); }
   afterLoad(); selectTrack(activeId); scroller.scrollLeft = 0; scroller.scrollTop = 0; ensureTrackVisible(); updateRegionUI(); refreshSelBar();
 }
@@ -1976,7 +2085,7 @@ function buildKeys(){
 }
 function typing(e){ const t = e.target; return t && (t.tagName === 'INPUT' && t.type !== 'range' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT'); }
 document.addEventListener('keydown', e => {
-  if(typing(e) || !$('dlgNew').hidden || !$('dlgExport').hidden) { if(e.key === 'Escape'){ $('dlgNew').hidden = true; $('dlgExport').hidden = true; } return; }
+  if(typing(e) || !$('dlgNew').hidden || !$('dlgExport').hidden || !$('dlgIntro').hidden) { if(e.key === 'Escape'){ $('dlgNew').hidden = true; $('dlgExport').hidden = true; if(!$('dlgIntro').hidden) closeIntro(); } return; }
   const mod = e.ctrlKey || e.metaKey, k = e.key.toLowerCase();
   if(mod){
     if(k === 'z'){ e.preventDefault(); e.shiftKey ? redo() : undo(); } else if(k === 'y'){ e.preventDefault(); redo(); }
@@ -2020,11 +2129,55 @@ function openSheet(name){
 }
 function closeSheet(){ delete document.body.dataset.sheet; }
 function refreshSelBar(){
+  refreshEmpty();
   const bar = $('selBar'); if(!bar || !S) return;
   const act = activeTrack(), n = act ? act.notes.filter(x => sel.has(x.id)).length : 0;
   const show = isPhone() && n > 0;
   if(bar.hidden === show){ bar.hidden = !show; layoutSoon(); }
   if(show) $('selCount').textContent = n + (n === 1 ? ' nota' : ' notas');
+}
+
+/* ----- Estados: vacío, guía inicial, fin de la obra y exportación ----- */
+const INTRO_KEY = 'boceto-orquestal-guia-v1';
+function pieceSummary(){
+  let last = 0, used = 0;
+  for(const t of S.tracks){ if(t.notes.length) used++; for(const n of t.notes) last = Math.max(last, n.t + n.d); }
+  const s = tickToSec(last), m = Math.floor(s / 60), r = Math.round(s - m * 60);
+  const bars = last ? posInfo(Math.max(0, last - 1)).bar + 1 : 0;
+  return used + (used === 1 ? ' pista' : ' pistas') + ' · ' + bars + (bars === 1 ? ' compás' : ' compases') + ' · ' + m + ':' + String(r).padStart(2, '0') + ' min';
+}
+function refreshEmpty(){
+  const el = $('emptyHint'); if(!el || !S) return;
+  const act = activeTrack(), show = V.view === 'roll' && act && act.notes.length === 0;
+  el.hidden = !show; if(!show) return;
+  $('emptyTitle').textContent = act.name + ' aún no tiene notas';
+  $('emptyText').textContent = isCoarse()
+    ? 'Toca la cuadrícula para escribir la primera nota. Usa dos dedos para moverte y pellizca para acercar.'
+    : 'Haz clic en la cuadrícula para escribir la primera nota. Arrastra su borde derecho para alargarla.';
+}
+function showIntro(){
+  const touchy = isCoarse(), steps = touchy ? [
+    ['pencil', 'Escribe con un dedo', 'Toca la cuadrícula para poner una nota; arrástrala para moverla.'],
+    ['hand', 'Muévete con dos dedos', 'Desliza para recorrer la obra y pellizca para acercar.'],
+    ['select', 'Toque largo para seleccionar', 'Doble toque sobre una nota la borra.'],
+    ['play', 'Escucha desde abajo', 'Reproducir y volver al inicio están junto a tu pulgar.']
+  ] : [
+    ['pencil', 'Escribe con el lápiz', 'Clic para poner una nota; arrastra su borde para alargarla.'],
+    ['select', 'Selecciona y edita', 'Arrastra con Selección y usa Ctrl+C, Ctrl+V o las flechas.'],
+    ['hand', 'Recorre la obra', 'Rueda para desplazarte; Ctrl + rueda para acercar.'],
+    ['play', 'Escucha', 'Espacio reproduce e Inicio vuelve al principio.']
+  ];
+  const ul = $('introSteps'); ul.replaceChildren();
+  steps.forEach(([ic, t, d]) => { const li = h('li', {}, h('span', { class:'ic' }), h('div', {}, h('b', {}, t), h('span', {}, d))); li.querySelector('.ic').innerHTML = ICONS[ic]; ul.append(li); });
+  $('dlgIntro').hidden = false; $('introGo').focus();
+}
+function closeIntro(){ $('dlgIntro').hidden = true; try{ localStorage.setItem(INTRO_KEY, '1'); }catch(e){} }
+let endT = 0;
+function showEndCard(){ $('endSum').textContent = pieceSummary().split(' · ').slice(1).join(' · '); $('endCard').hidden = false; clearTimeout(endT); endT = setTimeout(hideEndCard, 9000); }
+function hideEndCard(){ clearTimeout(endT); $('endCard').hidden = true; }
+function showExportDone(filename){
+  $('exMsg').textContent = ''; $('exDoneSum').textContent = pieceSummary(); $('exDoneFile').textContent = filename;
+  const d = $('exDone'); d.hidden = true; void d.offsetWidth; d.hidden = false;
 }
 
 /* ----- Herramientas y botones ----- */
@@ -2041,7 +2194,7 @@ function bindUI(){
   $('btnPlay').onclick = togglePlay; $('btnStop').onclick = stopAll; $('btnStart').onclick = goStart;
   $('mPlay').onclick = togglePlay; $('mStart').onclick = goStart; $('mRec').onclick = () => $('btnRec').click();
   $('mUndo').onclick = undo; $('mRedo').onclick = redo;
-  $('mMenu').onclick = () => openSheet('top'); $('mTitle').onclick = () => openSheet('top'); $('mTrack').onclick = () => openSheet('tracks');
+  $('mMenu').onclick = () => openSheet('top'); $('mLoop').onclick = () => $('btnLoop').click(); $('mTrack').onclick = () => openSheet('tracks');
   $('mEdit').onclick = () => openSheet('tools'); $('mSet').onclick = () => openSheet('insp');
   document.querySelectorAll('.sh-close').forEach(b => b.addEventListener('click', closeSheet)); $('sheetBg').addEventListener('click', closeSheet);
   $('btnVel').onclick = () => { V.vel = !V.vel; $('btnVel').setAttribute('aria-pressed', V.vel); layout(); };
@@ -2057,7 +2210,7 @@ function bindUI(){
   $('btnLoop').onclick = () => { T.loop = !T.loop; updateTransportUI(); if(T.playing){ pauseTransport(); startTransport(); } };
   $('btnMet').onclick = () => { T.metro = !T.metro; updateTransportUI(); }; $('btnCount').onclick = () => { T.count = !T.count; updateTransportUI(); };
   $('btnUndo').onclick = undo; $('btnRedo').onclick = redo;
-  $('title').addEventListener('input', e => { S.title = e.target.value; $('mTitle').textContent = S.title || 'Sin título'; saveSoon(); });
+  $('title').addEventListener('input', e => { S.title = e.target.value; saveSoon(); });
   $('bpm').addEventListener('change', e => { mutate(() => { S.tempos[0].bpm = clamp(Math.round(+e.target.value) || 96, 20, 300); }, { panels:true }); });
   $('meter').addEventListener('change', e => { const [n, d] = e.target.value.split('/').map(Number); mutate(() => { S.meters[0].n = n; S.meters[0].d = d; }, { panels:true }); });
   $('keyRoot').addEventListener('change', e => { mutate(() => { S.key.root = +e.target.value; }, { panels:true }); });
@@ -2073,7 +2226,7 @@ function bindUI(){
   $('btnCopy').onclick = () => copySel(); $('btnPaste').onclick = () => pasteAt(Math.max(0, snapTo(curTick))); $('btnDup').onclick = dupSel; $('btnDel').onclick = deleteSel; $('btnQuant').onclick = quantizeSel;
   $('btnTrDn').onclick = () => transposeBy(-1); $('btnTrUp').onclick = () => transposeBy(1); $('btnOctDn').onclick = () => transposeBy(-12); $('btnOctUp').onclick = () => transposeBy(12);
   $('btnCresc').onclick = () => applyHairpin(60, 120); $('btnDim').onclick = () => applyHairpin(120, 60); $('btnDynClr').onclick = clearHairpins;
-  $('btnView').onclick = () => { V.view = V.view === 'roll' ? 'orq' : 'roll'; $('btnView').setAttribute('aria-pressed', V.view === 'orq'); $('btnView').textContent = V.view === 'orq' ? 'Piano roll' : 'Orquesta'; scroller.scrollTop = 0; layout(); if(V.view === 'roll') ensureTrackVisible(); };
+  $('btnView').onclick = () => { V.view = V.view === 'roll' ? 'orq' : 'roll'; setTimeout(refreshEmpty); $('btnView').setAttribute('aria-pressed', V.view === 'orq'); $('btnView').textContent = V.view === 'orq' ? 'Piano roll' : 'Orquesta'; scroller.scrollTop = 0; layout(); if(V.view === 'roll') ensureTrackVisible(); };
   $('btnGhost').onclick = () => { V.ghost = !V.ghost; $('btnGhost').setAttribute('aria-pressed', V.ghost); requestDraw(); };
   $('btnZoomIn').onclick = () => setZoom(V.ppt * 1.3); $('btnZoomOut').onclick = () => setZoom(V.ppt / 1.3);
   $('btnKbd').onclick = () => { V.kbd = !V.kbd; $('kbd').hidden = !V.kbd; $('btnKbd').setAttribute('aria-pressed', V.kbd); buildKeys(); layout(); };
@@ -2083,10 +2236,13 @@ function bindUI(){
   const nw = (kind) => { $('dlgNew').hidden = true; checkpoint(); loadProject(kind === 'demo' ? demoProject() : newProject(kind)); toast(kind === 'template' ? 'Plantilla de orquesta lista: 15 pistas.' : kind === 'demo' ? 'Ejemplo cargado.' : 'Obra en blanco.'); };
   $('newTemplate').onclick = () => nw('template'); $('newBlank').onclick = () => nw('blank'); $('newDemo').onclick = () => nw('demo');
   $('btnOpen').onclick = () => { closeSheet(); $('fileIn').click(); }; $('fileIn').onchange = e => { const f = e.target.files[0]; if(f) importFile(f); e.target.value = ''; };
-  $('btnExport').onclick = () => { closeSheet(); $('exMsg').textContent = ''; $('dlgExport').hidden = false; };
+  $('btnExport').onclick = () => { closeSheet(); $('exMsg').textContent = ''; $('exDone').hidden = true; $('dlgExport').hidden = false; };
+  $('btnGuide').onclick = () => { closeSheet(); showIntro(); };
+  $('introGo').onclick = closeIntro; $('introPlay').onclick = () => { closeIntro(); goStart(); if(!T.playing) startTransport(); };
+  $('endAgain').onclick = () => { hideEndCard(); goStart(); if(!T.playing) startTransport(); }; $('endX').onclick = hideEndCard;
   $('exClose').onclick = () => { $('dlgExport').hidden = true; };
   $('exMidi').onclick = exportMidi; $('exWav').onclick = exportWav; $('exJson').onclick = exportJson;
-  document.querySelectorAll('.dlg').forEach(d => d.addEventListener('pointerdown', e => { if(e.target === d) d.hidden = true; }));
+  document.querySelectorAll('.dlg').forEach(d => d.addEventListener('pointerdown', e => { if(e.target === d){ if(d.id === 'dlgIntro') closeIntro(); else d.hidden = true; } }));
   $('rollWrap').addEventListener('pointerdown', () => { if(actx && actx.state !== 'running') actx.resume(); });
   bindInspector();
 }
@@ -2099,7 +2255,7 @@ function frame(){
     if(txt !== lastPos){ $('pos').textContent = txt; $('mPos').textContent = shortPos(tick); lastPos = txt; }
     const x = tick * V.ppt - scroller.scrollLeft + KEYW;
     if(x > vw - 30 || x < KEYW) scroller.scrollLeft = Math.max(0, tick * V.ppt - 50);
-    if(!T.loop && tick >= endTick() && curSec() > tickToSec(endTick()) + 0.2){ stopAll(); }
+    if(!T.loop && tick >= endTick() && curSec() > tickToSec(endTick()) + 0.2){ stopAll(); showEndCard(); }
     draw();
     if(Math.floor(tick / PPQ) !== frame.lastBeat){ frame.lastBeat = Math.floor(tick / PPQ); if(!$('tabHarm').hidden) refreshHarmNow(); }
   } else { const txt = fmtPos(curTick); if(txt !== lastPos){ $('pos').textContent = txt; $('mPos').textContent = shortPos(curTick); lastPos = txt; } }
@@ -2118,9 +2274,11 @@ function init(){
   let P = null, restored = false;
   try{ const raw = localStorage.getItem(KEY); if(raw){ P = normalize(JSON.parse(raw)); restored = true; } }catch(e){ P = null; }
   if(!P) P = demoProject();
-  S = P; activeId = S.tracks[0].id; rebuildTimeline(); updateUndoUI();
+  S = P; activeId = (S.tracks.find(t => t.notes.some(n => n.t === 0) && instOf(t).h !== 0) || S.tracks[0]).id; rebuildTimeline(); updateUndoUI();
   afterLoad(); selectTrack(activeId); layout(); ensureTrackVisible();
   setStatus(restored ? 'Obra recuperada de este navegador' : 'Ejemplo cargado: edítalo o crea una obra nueva');
+  let seen = false; try{ seen = localStorage.getItem(INTRO_KEY) === '1'; }catch(e){}
+  if(!seen) showIntro();
   requestAnimationFrame(frame);
 }
 init();
