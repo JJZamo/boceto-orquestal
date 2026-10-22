@@ -955,6 +955,7 @@ const INSTRUMENTS = [
   {id:'harp', name:'Arpa', sec:'teclas', lo:24, hi:103, r:{k:'pluck', parts:[[1,1],[2,.35],[3,.15],[4,.08]], wave:SIN, dec:1.8, cut:8, rel:.3, g:1}},
   {id:'pno', name:'Piano', sec:'teclas', lo:21, hi:108, r:{k:'pluck', parts:[[1,1],[2,.55],[3,.3],[4,.2],[5,.1]], wave:SIN, dec:2.4, cut:10, rel:.25, g:1}},
   {id:'org', name:'Órgano', sec:'teclas', lo:36, hi:96, r:{k:'organ'}},
+  {id:'mbox', name:'Caja musical', sec:'teclas', lo:60, hi:108, r:{k:'pluck', parts:[[1,1],[6.27,.16],[2,.06]], wave:SIN, dec:2.6, cut:16, rel:.5, g:.9}},
   // Cuerdas
   {id:'vn1', name:'Violines I', sec:'cuerdas', lo:55, hi:100, r:{k:'sub', osc:[[SAW,-9,.34],[SAW,0,.34],[SAW,9,.34]], f:['lowpass',5.5,.6,0], env:[.12,.2,.85,.35], vib:[5.5,9,.25], g:1}},
   {id:'vn2', name:'Violines II', sec:'cuerdas', lo:55, hi:100, pan:.15, r:{k:'sub', osc:[[SAW,-8,.34],[SAW,1,.34],[SAW,10,.34]], f:['lowpass',5.2,.6,0], env:[.13,.2,.85,.35], vib:[5.3,9,.28], g:1}},
@@ -1342,7 +1343,7 @@ function encodeWav(buf){
 }
 
 /* ===== MIDI ===== */
-const GM = { fl:73, ob:68, cl:71, fg:70, hn:60, tp:56, tb:57, tu:58, tim:47, harp:46, pno:0, org:19, vn1:40, vn2:40, vla:41, vc:42, cb:43, strs:48, lead:80, bass:38, pad:89, pluck:45, ep:4, bell:14 };
+const GM = { fl:73, ob:68, cl:71, fg:70, hn:60, tp:56, tb:57, tu:58, tim:47, harp:46, pno:0, org:19, vn1:40, vn2:40, vla:41, vc:42, cb:43, strs:48, lead:80, bass:38, pad:89, pluck:45, ep:4, bell:14, mbox:10 };
 const MSCALE = 5; // 96 -> 480 ppq
 function vlq(n){ const b = [n & 0x7f]; while((n >>= 7)) b.unshift((n & 0x7f) | 0x80); return b; }
 function metaEv(tick, type, bytes){ return { tick, ord:1, b:[0xff, type, ...vlq(bytes.length), ...bytes] }; }
@@ -1382,7 +1383,7 @@ function writeMidi(P){
   return out;
 }
 function gmToInst(prog){
-  if(prog < 8) return 'pno'; if(prog >= 16 && prog < 24) return 'org'; if(prog >= 24 && prog < 32) return 'pluck';
+  if(prog === 10) return 'mbox'; if(prog < 8) return 'pno'; if(prog >= 16 && prog < 24) return 'org'; if(prog >= 24 && prog < 32) return 'pluck';
   if(prog >= 32 && prog < 40) return 'bass'; if(prog === 40) return 'vn1'; if(prog === 41) return 'vla'; if(prog === 42) return 'vc'; if(prog === 43) return 'cb';
   if(prog === 46) return 'harp'; if(prog === 47) return 'tim'; if(prog >= 44 && prog < 56) return 'strs';
   if(prog === 57) return 'tb'; if(prog === 58) return 'tu'; if(prog === 60) return 'hn'; if(prog >= 56 && prog < 64) return 'tp';
